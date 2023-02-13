@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('RODE API')
     .setDescription('The RODE API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   

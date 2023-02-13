@@ -9,8 +9,8 @@ const RodeDataSource = new DataSource({
     username: RodeConfig.DB_USERNAME,
     password: RodeConfig.DB_PASSWORD,
     database: RodeConfig.DB_DATABASE,
-    entities: [path.resolve(__dirname + '../../../src/**/*.entity.ts')],
-    migrations: [path.resolve(__dirname + '../../../src/migrations', '*.ts')],
+    entities: [path.resolve(__dirname + '/../**/*.entity{.js,.ts}')],
+    migrations: [path.resolve(__dirname + '/../migrations', '*{.js,.ts}')],
     logger: 'advanced-console',
     logging: 'all',
 });

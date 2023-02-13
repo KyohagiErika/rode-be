@@ -22,6 +22,7 @@ export class DatabaseService {
             await this.accountRepository.save({
                 fname: 'Admin',
                 lname: '',
+                sname: '',
                 email: RodeConfig.ADMIN_EMAIL,
                 dob: new Date(),
                 phone: '',

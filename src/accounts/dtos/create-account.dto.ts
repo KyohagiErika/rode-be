@@ -1,9 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { RoleEnum } from "../../etc/enums";
 
 export class CreateAccountDto {
     @ApiProperty()
     fname: string;
+
+    @ApiProperty()
+    sname: string;
 
     @ApiProperty()
     lname: string;
@@ -19,7 +21,4 @@ export class CreateAccountDto {
 
     @ApiProperty()
     dob: Date;
-
-    @ApiProperty({ enum: RoleEnum, default: RoleEnum.USER })
-    role: RoleEnum;
 }

@@ -10,20 +10,26 @@ export class Account {
     fname: string;
 
     @Column()
+    sname: string;
+
+    @Column()
     lname: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ unique: true })
     studentId: string;
 
-    @Column()
+    @Column({ unique: true })
     phone: string;
 
     @Column()
     dob: Date;
 
-    @Column({ enum: RoleEnum, default: RoleEnum.USER })
+    @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
     role: RoleEnum;
+
+    @Column({ default: true })
+    isActive: boolean;
 }

@@ -13,10 +13,10 @@ import { Account } from '../accounts/entities/account.entity';
 })
 export class DatabaseModule {
     constructor(
-        databaseService: DatabaseService,
+        private readonly databaseService: DatabaseService,
     ) {}
     
     onModuleInit() {
-
+        this.databaseService.loadAdmin();
     }
 }
