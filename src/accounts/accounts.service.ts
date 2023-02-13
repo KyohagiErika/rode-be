@@ -13,7 +13,8 @@ export class AccountsService {
     ) {}
 
     async getAll() {
-        return await this.accountRepository.find();
+        const accounts = await this.accountRepository.find();
+        return [accounts, null];
     }
 
     async getByEmail(email: string, noCheckActive?: boolean) {
