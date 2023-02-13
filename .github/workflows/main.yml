@@ -9,4 +9,4 @@ jobs:
       - name: Install NodeJS and Docker
         run: sudo apt install nodejs docker
       - name: Build src code
-        run: npm install & npm run build
+        run: cd .. && npm install & npm run build
