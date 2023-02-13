@@ -1,0 +1,12 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build source code to Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: install NodeJS and Docker
+        run: apt install node docker
+      - name: build src code
+        run: npm install & npm run build
