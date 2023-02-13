@@ -11,3 +11,13 @@ jobs:
         with:
           node-version: 16
       - run: npm install -f
+      - run: npm run build
+      - uses: docker/login-action@v2
+        with:
+          username: longthanhle1122
+          password: Lethanhlong03_2003
+      - uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: longthanhle1122/rode-be:latest
+
