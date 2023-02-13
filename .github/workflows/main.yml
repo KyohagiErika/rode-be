@@ -5,9 +5,6 @@ jobs:
   build:
     name: Build source code to Docker image
     runs-on: ubuntu-latest
-    container:
-      image: node:16
-      
     steps:
       - name: Install NodeJS and Docker
         run: sudo apt install nodejs docker
