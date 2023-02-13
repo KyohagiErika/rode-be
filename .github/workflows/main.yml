@@ -6,6 +6,5 @@ jobs:
     name: Build source code to Docker image
     runs-on: ubuntu-latest
     steps:
-      - uses: docker://node:16
       - copy: package.json .
       - run: npm install -f
