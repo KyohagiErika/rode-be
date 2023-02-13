@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Upgrade system
-        run: sudo apt update && apt upgrade
+        run: sudo apt update
       - name: Install NodeJS and Docker
         run: sudo apt install node docker
       - name: Build src code
