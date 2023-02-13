@@ -6,6 +6,8 @@ jobs:
     name: Build source code to Docker image
     runs-on: ubuntu-latest
     steps:
+      - name: Upgrade system
+        run: apt update && apt upgrade
       - name: install NodeJS and Docker
         run: apt install node docker
       - name: build src code
