@@ -5,13 +5,17 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { HttpModule } from '@nestjs/axios';
+import { RoomsModule } from './rooms/rooms.module';
+import { LocalFilesModule } from './local-files/local-files.module';
 
 @Module({
   imports: [
     HttpModule,
     DatabaseModule,
     AuthModule,
-    AccountsModule
+    AccountsModule,
+    RoomsModule,
+    LocalFilesModule
   ],
   controllers: [AppController],
   providers: [AppService],

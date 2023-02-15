@@ -6,7 +6,7 @@ import { RoleEnum } from '../etc/enums';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dtos/create-account.dto';
-import ResponseObject from 'src/etc/response-object';
+import ResponseObject from '../etc/response-object';
 import { UpdateAccountDto } from './dtos/update-account.dto';
 
 @Controller('accounts')

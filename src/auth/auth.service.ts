@@ -19,6 +19,9 @@ export class AuthService {
                 audience: RodeConfig.GOOGLE_CLIENT_ID,
             });
             const payload = ticket.getPayload();
+            // if (payload.hd != 'fpt.edu.vn') {
+            //     return [null, 'Your email is not allowed'];
+            // }
             return [payload, null];
         } catch (err) {
             return [null, err];
