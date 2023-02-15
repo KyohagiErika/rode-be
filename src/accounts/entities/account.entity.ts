@@ -10,9 +10,6 @@ export class Account {
     fname: string;
 
     @Column()
-    sname: string;
-
-    @Column()
     lname: string;
 
     @Column({ unique: true })

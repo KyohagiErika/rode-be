@@ -11,14 +11,26 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
+    async getInfoFromGoogle(credential: string) {
+        const client = new OAuth2Client(RodeConfig.GOOGLE_CLIENT_ID);
+        try {
+            const ticket = await client.verifyIdToken({
+                idToken: credential,
+                audience: RodeConfig.GOOGLE_CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+            return [payload, null];
+        } catch (err) {
+            return [null, err];
+        }
+    }
+
     async googleLogin(credential: string) {
         // Verify credential
-        const client = new OAuth2Client(RodeConfig.GOOGLE_CLIENT_ID);
-        const ticket = await client.verifyIdToken({
-            idToken: credential,
-            audience: RodeConfig.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
+        const [payload, err] = await this.getInfoFromGoogle(credential);
+        if (err) {
+            return [null, err];
+        }
         const email = payload.email;
 
         // Check database

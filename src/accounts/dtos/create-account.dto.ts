@@ -5,9 +5,6 @@ export class CreateAccountDto {
     fname: string;
 
     @ApiProperty()
-    sname: string;
-
-    @ApiProperty()
     lname: string;
 
     @ApiProperty()

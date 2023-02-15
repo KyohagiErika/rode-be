@@ -28,8 +28,6 @@ export class AccountsController {
   }
 
   @Post('create-one')
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN)
   async createOne(@Body() info: CreateAccountDto) {
     const [account, err] = await this.accountsService.createOne(info);
     if (!account) {

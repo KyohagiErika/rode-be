@@ -13,7 +13,17 @@ export class AuthController {
         private readonly authService: AuthService,
     ) {}
 
-    @Post('login/:credential')
+    @Get('get-info-from-google/:credential')
+    @ApiParam({ name: 'credential' })
+    async getInfoFromGoogle(@Param('credential') credential: string) {
+        const [info, err] = await this.authService.getInfoFromGoogle(credential);
+        if (err) {
+            return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get info from google failed', null, err);
+        }
+        return new ResponseObject(HttpStatus.OK, 'Get info from google success', info, null);
+    }
+
+    @Get('login/:credential')
     @ApiParam({ name: 'credential' })
     async login(@Param('credential') credential: string) {
         const [account, err] = await this.authService.googleLogin(credential);

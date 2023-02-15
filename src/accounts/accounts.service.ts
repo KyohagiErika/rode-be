@@ -80,7 +80,6 @@ export class AccountsService {
         }
         const account = await this.accountRepository.save({
             fname: info.fname,
-            sname: info.sname,
             lname: info.lname,
             email: info.email,
             dob: info.dob,
@@ -128,7 +127,6 @@ export class AccountsService {
             return [null, err];
         }
         account.fname = info.fname ?? account.fname;
-        account.sname = info.sname ?? account.sname;
         account.lname = info.lname ?? account.lname;
         account.dob = info.dob ?? account.dob;
         account.phone = info.phone ?? account.phone;
