@@ -15,7 +15,7 @@ import { LocalFilesModule } from './local-files/local-files.module';
     AuthModule,
     AccountsModule,
     RoomsModule,
-    LocalFilesModule
+    LocalFilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
