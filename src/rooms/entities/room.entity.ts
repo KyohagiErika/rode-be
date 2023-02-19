@@ -1,4 +1,3 @@
-import { LocalFile } from '../../local-files/entities/local-file.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoomQuestion } from './room-question.entity';
 import { RoomTypeEnum } from '../../etc/enums';
