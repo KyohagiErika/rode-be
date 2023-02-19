@@ -6,8 +6,6 @@ RUN bash nodesource_setup.sh
 RUN apt-get install -y nodejs
 RUN apt-get install -y build-essential
 RUN apt-get install -y openjdk-8-jdk
-RUN node -v
-RUN npm -v
 WORKDIR /app
 COPY . .
 COPY .env.deploy .env
