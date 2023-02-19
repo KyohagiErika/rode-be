@@ -8,16 +8,17 @@ import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import ResponseObject from '../etc/response-object';
 import { UpdateAccountDto } from './dtos/update-account.dto';
+import CurrentAccount from 'src/decorators/current-account.decorator';
+import { Account } from './entities/account.entity';
 
 @Controller('accounts')
 @ApiTags('accounts')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Get('get-all')
-  @UseGuards(RoleGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
   async getAll() {
     const [accounts, err] = await this.accountsService.getAll();
@@ -37,10 +38,15 @@ export class AccountsController {
   }
 
   @Post('update-one/:id')
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN)
-  async updateOne(@Param('id') id: string, @Body() info: UpdateAccountDto) {
-    const [account, err] = await this.accountsService.updateOne(id, info);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  async updateOne(
+    @Param('id') id: string,
+    @CurrentAccount() curAccount: Account,
+    @Body() info: UpdateAccountDto
+  ) {
+    const [account, err] = await this.accountsService.updateOne(curAccount.role == RoleEnum.ADMIN ? id : curAccount.id, info);
     if (!account) {
       return new ResponseObject(HttpStatus.BAD_REQUEST, 'Update account failed!', null, err);
     }
@@ -48,7 +54,8 @@ export class AccountsController {
   }
 
   @Post('toggle-active/:id')
-  @UseGuards(RoleGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
   async toggleActive(@Param('id') id: string) {
     const [account, err] = await this.accountsService.toggleActive(id);

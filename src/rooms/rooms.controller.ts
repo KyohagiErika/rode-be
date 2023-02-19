@@ -38,4 +38,15 @@ export class RoomsController {
     }
     return new ResponseObject(HttpStatus.OK, 'Create room success!', room, null);
   }
+
+  @Get('get-all')
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async getAll() {
+    const [rooms, err] = await this.roomsService.findAll();
+    if (!rooms) {
+      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get all rooms failed!', null, err);
+    }
+    return new ResponseObject(HttpStatus.OK, 'Get all rooms success!', rooms, null);
+  }
 }
