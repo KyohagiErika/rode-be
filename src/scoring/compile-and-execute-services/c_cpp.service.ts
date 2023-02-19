@@ -1,71 +1,83 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
 import * as cp from 'child_process';
 
 @Injectable()
 export class C_CPPSevice {
-    constructor(
-        @Inject('SCORING_PATH')
-        private scoringPath: string
-    ) {}
+  constructor(
+    @Inject('SCORING_PATH')
+    private scoringPath: string,
+  ) {}
 
-    compileAndExecute(code: string, testCases: {
-        input: string,
-        output: string
-    }[]): [any, any] {
-        const [id, err] = this.compile(code);
-        if (err) {
-            return [null, err];
+  compileAndExecute(
+    code: string,
+    testCases: {
+      input: string;
+      output: string;
+    }[],
+  ): [any, any] {
+    const [id, err] = this.compile(code);
+    if (err) {
+      return [null, err];
+    }
+    return this.execute(id, testCases);
+  }
+
+  compile(code: string) {
+    let compileErr = null;
+    const id = randomUUID();
+    fs.writeFileSync(path.resolve(this.scoringPath + `/${id}.c`), code);
+    try {
+      cp.execSync(
+        `gcc ${path.resolve(this.scoringPath + `/${id}.c`)} -o ${path.resolve(
+          this.scoringPath + `/${id}`,
+        )}`,
+      );
+    } catch (err) {
+      compileErr = err.message;
+    }
+    fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.c`));
+    return [id, compileErr];
+  }
+
+  execute(
+    id: string,
+    testCases: {
+      input: string;
+      output: string;
+    }[],
+  ): [any, any] {
+    let passedTestCases = 0;
+    let totalTime = 0;
+    try {
+      for (const testCase of testCases) {
+        const t1 = performance.now();
+        const result = cp.execSync(path.resolve(this.scoringPath + `/${id}`), {
+          input: testCase.input,
+        });
+        const t2 = performance.now();
+        const dt = t2 - t1;
+        if (result.toString() == testCase.output) {
+          passedTestCases++;
         }
-        return this.execute(id, testCases);
+        totalTime += dt;
+      }
+    } catch (err) {
+      return [null, err.message];
     }
 
-    compile(code: string) {
-        let compileErr = null;
-        const id = randomUUID();
-        fs.writeFileSync(path.resolve(this.scoringPath + `/${id}.c`), code);
-        try {
-            cp.execSync(`gcc ${path.resolve(this.scoringPath + `/${id}.c`)} -o ${path.resolve(this.scoringPath + `/${id}`)}`);
-        } catch (err) {
-            compileErr = err.message;
-        }
-        fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.c`));
-        return [id, compileErr];
+    console.log(`Passed test cases: ${passedTestCases}/${testCases.length}`);
+    console.log(`Execution time: ${totalTime}ms`);
+
+    if (fs.existsSync(path.resolve(this.scoringPath + `/${id}`))) {
+      fs.unlinkSync(path.resolve(this.scoringPath + `/${id}`));
+    }
+    if (fs.existsSync(path.resolve(this.scoringPath + `/${id}.exe`))) {
+      fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.exe`));
     }
 
-    execute(id: string, testCases: {
-        input: string,
-        output: string
-    }[]): [any, any] {
-        let passedTestCases = 0;
-        let totalTime = 0;
-        try {
-            for (const testCase of testCases) {
-                const t1 = performance.now();
-                const result = cp.execSync(path.resolve(this.scoringPath + `/${id}`), { input: testCase.input });
-                const t2 = performance.now();
-                const dt = t2 - t1;
-                if (result.toString() == testCase.output) {
-                     passedTestCases++;
-                }
-                totalTime += dt;
-            }
-        } catch (err) {
-            return [null, err.message];
-        }
-
-        console.log(`Passed test cases: ${passedTestCases}/${testCases.length}`);
-        console.log(`Execution time: ${totalTime}ms`);
-
-        if (fs.existsSync(path.resolve(this.scoringPath + `/${id}`))) {
-            fs.unlinkSync(path.resolve(this.scoringPath + `/${id}`));
-        }
-        if (fs.existsSync(path.resolve(this.scoringPath + `/${id}.exe`))) {
-            fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.exe`));
-        }
-
-        return [{ passed: passedTestCases, execTime: totalTime }, null]
-    }
+    return [{ passed: passedTestCases, execTime: totalTime }, null];
+  }
 }

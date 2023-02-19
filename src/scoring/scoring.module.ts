@@ -12,16 +12,16 @@ import { JavaService } from './compile-and-execute-services/java.service';
   providers: [
     {
       provide: 'SCORING_PATH',
-      useValue: path.resolve(__dirname + '/../../scoring')
+      useValue: path.resolve(__dirname + '/../../scoring'),
     },
-    ScoringService, C_CPPSevice, JavaService
+    ScoringService,
+    C_CPPSevice,
+    JavaService,
   ],
-  imports: [RoomsModule]
+  imports: [RoomsModule],
 })
 export class ScoringModule {
-  constructor(
-    @Inject('SCORING_PATH') private scoringPath: string
-  ) {}
+  constructor(@Inject('SCORING_PATH') private scoringPath: string) {}
 
   onModuleInit() {
     if (!fs.existsSync(this.scoringPath)) {

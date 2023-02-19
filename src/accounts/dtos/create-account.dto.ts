@@ -1,21 +1,21 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAccountDto {
-    @ApiProperty()
-    fname: string;
+  @ApiProperty()
+  fname: string;
 
-    @ApiProperty()
-    lname: string;
+  @ApiProperty()
+  lname: string;
 
-    @ApiProperty()
-    email: string;
+  @ApiProperty()
+  email: string;
 
-    @ApiProperty()
-    studentId: string;
+  @ApiProperty()
+  studentId: string;
 
-    @ApiProperty()
-    phone: string;
+  @ApiProperty()
+  phone: string;
 
-    @ApiProperty()
-    dob: Date;
+  @ApiProperty()
+  dob: Date;
 }

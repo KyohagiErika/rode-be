@@ -11,28 +11,31 @@ import { JavaService } from './compile-and-execute-services/java.service';
 
 @Injectable()
 export class ScoringService {
-    constructor(
-        private readonly roomsService: RoomsService,
-        private readonly c_cppService: C_CPPSevice,
-        private readonly javaService: JavaService
-    ) {}
+  constructor(
+    private readonly roomsService: RoomsService,
+    private readonly c_cppService: C_CPPSevice,
+    private readonly javaService: JavaService,
+  ) {}
 
-    async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
-        const [room, err] = await this.roomsService.findOneById(submitDto.roomId);
-        if (err) {
-            return [null, err];
-        }
-        if (room.type == RoomTypeEnum.BE) {
-            if (submitDto.language == ProgrammingLangEnum.C_CPP) {
-                return this.c_cppService.compileAndExecute(submitDto.code, room.testCases);
-            } else if (submitDto.language == ProgrammingLangEnum.JAVA) {
-                const [result, err] = this.javaService.compile(submitDto.code);
-                return [result, err];
-            } else {
-                return [null, 'Language not supported'];
-            }
-        } else {
-            return [null, null];
-        }
+  async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
+    const [room, err] = await this.roomsService.findOneById(submitDto.roomId);
+    if (err) {
+      return [null, err];
     }
+    if (room.type == RoomTypeEnum.BE) {
+      if (submitDto.language == ProgrammingLangEnum.C_CPP) {
+        return this.c_cppService.compileAndExecute(
+          submitDto.code,
+          room.testCases,
+        );
+      } else if (submitDto.language == ProgrammingLangEnum.JAVA) {
+        const [result, err] = this.javaService.compile(submitDto.code);
+        return [result, err];
+      } else {
+        return [null, 'Language not supported'];
+      }
+    } else {
+      return [null, null];
+    }
+  }
 }

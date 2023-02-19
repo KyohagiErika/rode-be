@@ -17,7 +17,7 @@ import { ScoringModule } from './scoring/scoring.module';
     AccountsModule,
     RoomsModule,
     LocalFilesModule,
-    ScoringModule
+    ScoringModule,
   ],
   controllers: [AppController],
   providers: [AppService],

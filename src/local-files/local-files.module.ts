@@ -7,6 +7,6 @@ import { LocalFile } from './entities/local-file.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([LocalFile])],
   controllers: [LocalFilesController],
-  providers: [LocalFilesService]
+  providers: [LocalFilesService],
 })
 export class LocalFilesModule {}

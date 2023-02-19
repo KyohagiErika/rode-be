@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role.guard';
 import Roles from '../decorators/roles.decorator';
@@ -23,18 +31,38 @@ export class AccountsController {
   async getAll() {
     const [accounts, err] = await this.accountsService.getAll();
     if (!accounts) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get all accounts failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get all accounts failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Get all accounts success!', accounts, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all accounts success!',
+      accounts,
+      null,
+    );
   }
 
   @Post('create-one')
   async createOne(@Body() info: CreateAccountDto) {
     const [account, err] = await this.accountsService.createOne(info);
     if (!account) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Create account failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Create account failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Create account success!', account, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Create account success!',
+      account,
+      null,
+    );
   }
 
   @Post('update-one/:id')
@@ -44,13 +72,26 @@ export class AccountsController {
   async updateOne(
     @Param('id') id: string,
     @CurrentAccount() curAccount: Account,
-    @Body() info: UpdateAccountDto
+    @Body() info: UpdateAccountDto,
   ) {
-    const [account, err] = await this.accountsService.updateOne(curAccount.role == RoleEnum.ADMIN ? id : curAccount.id, info);
+    const [account, err] = await this.accountsService.updateOne(
+      curAccount.role == RoleEnum.ADMIN ? id : curAccount.id,
+      info,
+    );
     if (!account) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Update account failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Update account failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Update account success!', account, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Update account success!',
+      account,
+      null,
+    );
   }
 
   @Post('toggle-active/:id')
@@ -60,8 +101,18 @@ export class AccountsController {
   async toggleActive(@Param('id') id: string) {
     const [account, err] = await this.accountsService.toggleActive(id);
     if (!account) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Toggle active account failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Toggle active account failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Toggle active account success!', account, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Toggle active account success!',
+      account,
+      null,
+    );
   }
 }

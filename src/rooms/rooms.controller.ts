@@ -23,9 +23,19 @@ export class RoomsController {
   async getAllRoomType() {
     const [roomTypes, err] = await this.roomsService.getAllRoomTypes();
     if (!roomTypes) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get all room types failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get all room types failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Get all room types success!', roomTypes, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all room types success!',
+      roomTypes,
+      null,
+    );
   }
 
   @Post('create-one')
@@ -34,9 +44,19 @@ export class RoomsController {
   async createOne(@Body() info: CreateRoomDto) {
     const [room, err] = await this.roomsService.createOne(info);
     if (!room) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Create room failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Create room failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Create room success!', room, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Create room success!',
+      room,
+      null,
+    );
   }
 
   @Get('get-all')
@@ -45,8 +65,18 @@ export class RoomsController {
   async getAll() {
     const [rooms, err] = await this.roomsService.findAll();
     if (!rooms) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get all rooms failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get all rooms failed!',
+        null,
+        err,
+      );
     }
-    return new ResponseObject(HttpStatus.OK, 'Get all rooms success!', rooms, null);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all rooms success!',
+      rooms,
+      null,
+    );
   }
 }
