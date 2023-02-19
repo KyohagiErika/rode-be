@@ -29,8 +29,7 @@ export class ScoringService {
           room.testCases,
         );
       } else if (submitDto.language == ProgrammingLangEnum.JAVA) {
-        const [result, err] = this.javaService.compile(submitDto.code);
-        return [result, err];
+        return this.javaService.compileAndExecute(submitDto.code, room.testCases);
       } else {
         return [null, 'Language not supported'];
       }

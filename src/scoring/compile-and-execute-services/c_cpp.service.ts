@@ -49,7 +49,7 @@ export class C_CPPSevice {
       output: string;
     }[],
   ): [any, any] {
-    let passedTestCases = 0;
+    const testCaseStatistics = [];
     let totalTime = 0;
     try {
       for (const testCase of testCases) {
@@ -59,17 +59,12 @@ export class C_CPPSevice {
         });
         const t2 = performance.now();
         const dt = t2 - t1;
-        if (result.toString() == testCase.output) {
-          passedTestCases++;
-        }
+        testCaseStatistics.push(result.toString().trim() == testCase.output.trim());
         totalTime += dt;
       }
     } catch (err) {
       return [null, err.message];
     }
-
-    console.log(`Passed test cases: ${passedTestCases}/${testCases.length}`);
-    console.log(`Execution time: ${totalTime}ms`);
 
     if (fs.existsSync(path.resolve(this.scoringPath + `/${id}`))) {
       fs.unlinkSync(path.resolve(this.scoringPath + `/${id}`));
@@ -78,6 +73,6 @@ export class C_CPPSevice {
       fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.exe`));
     }
 
-    return [{ passed: passedTestCases, execTime: totalTime }, null];
+    return [{ testCaseStatistics: testCaseStatistics, execTime: totalTime }, null];
   }
 }

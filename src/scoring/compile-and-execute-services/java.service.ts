@@ -18,19 +18,25 @@ export class JavaService {
       output: string;
     }[],
   ): [any, any] {
-    return [null, null];
+    const [id, err] = this.compile(code);
+    if (err) {
+      return [null, err];
+    }
+    return this.execute(id, testCases);
   }
 
   compile(code: string) {
     let compileErr = null;
     const id = randomUUID();
-    fs.writeFileSync(path.resolve(this.scoringPath + `/${id}.java`), code);
+    fs.mkdirSync(path.resolve(this.scoringPath + `/${id}`));
+    fs.writeFileSync(path.resolve(this.scoringPath + `/${id}/${id}.java`), code);
     try {
-      cp.execSync(`javac ${path.resolve(this.scoringPath + `/${id}.java`)}`);
+      cp.execSync(`javac ${path.resolve(this.scoringPath + `/${id}/${id}.java`)}`);
     } catch (err) {
       compileErr = err.message;
     }
-    fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.java`));
+    
+    fs.unlinkSync(path.resolve(this.scoringPath + `/${id}/${id}.java`));
     return [id, compileErr];
   }
 
@@ -41,36 +47,28 @@ export class JavaService {
       output: string;
     }[],
   ): [any, any] {
-    let passedTestCases = 0;
+    const testCaseStatistics = [];
     let totalTime = 0;
     try {
       for (const testCase of testCases) {
         const t1 = performance.now();
         const result = cp.execSync(
-          `java ${path.resolve(this.scoringPath + `/${id}`)}`,
+          `java -cp ${path.resolve(this.scoringPath + `/${id}`)} Main`,
           { input: testCase.input },
         );
         const t2 = performance.now();
         const dt = t2 - t1;
-        if (result.toString() == testCase.output) {
-          passedTestCases++;
-        }
+        testCaseStatistics.push(result.toString().trim() == testCase.output.trim());
         totalTime += dt;
       }
     } catch (err) {
       return [null, err.message];
     }
 
-    console.log(`Passed test cases: ${passedTestCases}/${testCases.length}`);
-    console.log(`Execution time: ${totalTime}ms`);
-
     if (fs.existsSync(path.resolve(this.scoringPath + `/${id}`))) {
-      fs.unlinkSync(path.resolve(this.scoringPath + `/${id}`));
-    }
-    if (fs.existsSync(path.resolve(this.scoringPath + `/${id}.exe`))) {
-      fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.exe`));
+      fs.rmSync(path.resolve(this.scoringPath + `/${id}`), { recursive: true });
     }
 
-    return [{ passed: passedTestCases, execTime: totalTime }, null];
+    return [{ testCaseStatistics: testCaseStatistics, execTime: totalTime }, null];
   }
 }
