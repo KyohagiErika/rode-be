@@ -29,16 +29,40 @@ export class RoomsService {
       openTime: info.openTime,
       color: info.color,
       duration: info.duration,
-      questions: info.questions
-        ? info.questions.map((ele) => ({
-            question: {
-              id: ele,
-              isUsed: true,
-            },
+      questions: info.questionImages
+        ? info.questionImages.map((ele) => ({
+            questionImage: ele,
+          }))
+        : [],
+      testCases: info.testCases
+        ? info.testCases.map((ele) => ({
+            input: ele.input,
+            output: ele.output,
           }))
         : [],
       type: info.type,
     });
+    return [room, null];
+  }
+
+  async findAll() {
+    const rooms = await this.roomRepository.find();
+    return [rooms, null];
+  }
+
+  async findOneById(id: string): Promise<[Room, any]> {
+    const room = await this.roomRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        questions: true,
+        testCases: true,
+      },
+    });
+    if (!room) {
+      return [null, 'Room not found'];
+    }
     return [room, null];
   }
 }

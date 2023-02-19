@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "Launch via NPM",
+            "request": "launch",
+            "command": "npm run start:dev",
+            "type": "node-terminal",
+            "preLaunchTask": "npm: build"
+        }
+    ]
+}

@@ -7,6 +7,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { HttpModule } from '@nestjs/axios';
 import { RoomsModule } from './rooms/rooms.module';
 import { LocalFilesModule } from './local-files/local-files.module';
+import { ScoringModule } from './scoring/scoring.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LocalFilesModule } from './local-files/local-files.module';
     AccountsModule,
     RoomsModule,
     LocalFilesModule,
+    ScoringModule,
   ],
   controllers: [AppController],
   providers: [AppService],
