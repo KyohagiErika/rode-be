@@ -72,9 +72,12 @@ export class AccountsController {
   async updateOne(
     @Param('id') id: string,
     @CurrentAccount() curAccount: Account,
-    @Body() info: UpdateAccountDto
+    @Body() info: UpdateAccountDto,
   ) {
-    const [account, err] = await this.accountsService.updateOne(curAccount.role == RoleEnum.ADMIN ? id : curAccount.id, info);
+    const [account, err] = await this.accountsService.updateOne(
+      curAccount.role == RoleEnum.ADMIN ? id : curAccount.id,
+      info,
+    );
     if (!account) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,

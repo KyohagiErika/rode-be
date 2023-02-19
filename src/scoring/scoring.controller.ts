@@ -1,4 +1,11 @@
-import { Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role.guard';
 import Roles from '../decorators/roles.decorator';
@@ -25,7 +32,12 @@ export class ScoringController {
   ) {
     const [result, err] = await this.scoringService.submit(account, body);
     if (err) {
-      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Submit failed!', null, err);
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Submit failed!',
+        null,
+        err,
+      );
     }
     return new ResponseObject(HttpStatus.OK, 'Submit success!', result, null);
   }

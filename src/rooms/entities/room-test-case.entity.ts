@@ -1,17 +1,17 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Room } from "./room.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Room } from './room.entity';
 
 @Entity()
 export class RoomTestCase {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    input: string;
+  @Column()
+  input: string;
 
-    @Column()
-    output: string;
+  @Column()
+  output: string;
 
-    @ManyToOne(() => Room, { onDelete: 'CASCADE' })
-    room: Room;
+  @ManyToOne(() => Room, { onDelete: 'CASCADE' })
+  room: Room;
 }
