@@ -1,7 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as cp from 'child_process';
-import * as path from 'path';
-import * as fs from 'fs';
 import { Account } from '../accounts/entities/account.entity';
 import { RoomsService } from '../rooms/rooms.service';
 import { SubmitDto } from './dtos/submit.dto';
@@ -22,19 +19,29 @@ export class ScoringService {
     if (err) {
       return [null, err];
     }
-    if (room.type == RoomTypeEnum.BE) {
-      if (submitDto.language == ProgrammingLangEnum.C_CPP) {
-        return this.c_cppService.compileAndExecute(
-          submitDto.code,
-          room.testCases,
-        );
-      } else if (submitDto.language == ProgrammingLangEnum.JAVA) {
-        return this.javaService.compileAndExecute(submitDto.code, room.testCases);
-      } else {
-        return [null, 'Language not supported'];
+    switch (room.type) {
+      case RoomTypeEnum.BE: {
+        switch (submitDto.language) {
+          case ProgrammingLangEnum.C_CPP: {
+            return this.c_cppService.compileAndExecute(
+              submitDto.code,
+              room.testCases,
+            );
+          }
+          case ProgrammingLangEnum.JAVA: {
+            return this.javaService.compileAndExecute(submitDto.code, room.testCases);
+          }
+          default: {
+            return [null, 'Language not supported'];
+          }
+        }
       }
-    } else {
-      return [null, null];
+      case RoomTypeEnum.FE: {
+        
+      }
+      default: {
+        return [null, 'Room type not supported'];
+      }
     }
   }
 }
