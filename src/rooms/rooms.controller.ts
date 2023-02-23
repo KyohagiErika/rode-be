@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
-import { Body, Get, Post, UseGuards } from '@nestjs/common/decorators';
+import { Body, Get, Param, Post, UseGuards } from '@nestjs/common/decorators';
 import { HttpStatus } from '@nestjs/common/enums';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import ResponseObject from '../etc/response-object';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role.guard';
@@ -76,6 +76,48 @@ export class RoomsController {
       HttpStatus.OK,
       'Get all rooms success!',
       rooms,
+      null,
+    );
+  }
+
+  @Get('get-one-by-id/:id')
+  @ApiParam({ name: 'id', description: 'Room ID' })
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async getOneById(@Param('id') id: string) {
+    const [room, err] = await this.roomsService.findOneById(id);
+    if (err) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get room failed!',
+        null,
+        err,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get room success!',
+      room,
+      null,
+    );
+  }
+
+  @Get('get-one-by-code/:code')
+  @ApiParam({ name: 'code', description: 'Room code' })
+  async getOneByCode(@Param('code') code: string) {
+    const [room, err] = await this.roomsService.findOneByCode(code);
+    if (err) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get room failed!',
+        null,
+        err,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get room success!',
+      room,
       null,
     );
   }

@@ -6,8 +6,11 @@ export class SubmitDto {
   roomId: string;
 
   @ApiProperty()
+  questionId: string;
+
+  @ApiProperty()
   code: string;
 
   @ApiProperty({ enum: ProgrammingLangEnum, required: false })
-  language: ProgrammingLangEnum;
+  language?: ProgrammingLangEnum;
 }

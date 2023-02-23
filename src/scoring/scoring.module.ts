@@ -6,6 +6,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { C_CPPSevice } from './compile-and-execute-services/c_cpp.service';
 import { JavaService } from './compile-and-execute-services/java.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Question } from '../rooms/entities/question.entity';
 
 @Module({
   controllers: [ScoringController],

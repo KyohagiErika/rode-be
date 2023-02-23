@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { RoomQuestionImage } from './room-question-image.entity';
 import { RoomTypeEnum } from '../../etc/enums';
-import { RoomTestCase } from './room-test-case.entity';
+import { Question } from './question.entity';
 
 @Entity()
 export class Room {
@@ -21,16 +20,16 @@ export class Room {
   duration: number;
 
   @Column({ nullable: true })
-  color: string;
+  colors: string;
 
   @Column({ type: 'enum', enum: RoomTypeEnum })
   type: RoomTypeEnum;
 
-  @OneToMany(() => RoomQuestionImage, (question) => question.room, {
+  @OneToMany(() => Question, (question) => question.room, {
     cascade: true,
   })
-  questions: RoomQuestionImage[];
+  questions: Question[];
 
-  @OneToMany(() => RoomTestCase, (testCase) => testCase.room, { cascade: true })
-  testCases: RoomTestCase[];
+  @Column({ default: false })
+  isPrivate: boolean;
 }

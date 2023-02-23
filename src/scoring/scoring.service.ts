@@ -19,17 +19,21 @@ export class ScoringService {
     if (err) {
       return [null, err];
     }
+    const question = room.questions.find(ele => ele.id == submitDto.questionId);
+    if (!question) {
+      return [null, 'Question not found'];
+    }
     switch (room.type) {
       case RoomTypeEnum.BE: {
         switch (submitDto.language) {
           case ProgrammingLangEnum.C_CPP: {
             return this.c_cppService.compileAndExecute(
               submitDto.code,
-              room.testCases,
+              question.testCases,
             );
           }
           case ProgrammingLangEnum.JAVA: {
-            return this.javaService.compileAndExecute(submitDto.code, room.testCases);
+            return this.javaService.compileAndExecute(submitDto.code, question.testCases);
           }
           default: {
             return [null, 'Language not supported'];

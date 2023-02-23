@@ -15,10 +15,13 @@ export class DatabaseService {
   async loadAdmin() {
     const admin = await this.accountRepository.findOne({
       where: {
-        role: RoleEnum.ADMIN,
+        email: RodeConfig.ADMIN_EMAIL,
       },
     });
     if (!admin) {
+      await this.accountRepository.delete({
+        role: RoleEnum.ADMIN,
+      });
       await this.accountRepository.save({
         fname: 'Admin',
         lname: '',

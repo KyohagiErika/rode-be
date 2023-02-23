@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoomTypeEnum } from '../../etc/enums';
-import { CreateRoomTestCaseDto } from './create-room-test-case.dto';
+import { CreateQuestionDto } from './create-question.dto';
 
 export class CreateRoomDto {
   @ApiProperty()
@@ -15,15 +15,15 @@ export class CreateRoomDto {
   @ApiProperty()
   duration: number;
 
-  @ApiProperty()
-  questionImages: string[];
-
   @ApiProperty({ required: false })
-  color: string;
-
-  @ApiProperty({ type: [CreateRoomTestCaseDto], required: false })
-  testCases: CreateRoomTestCaseDto[];
+  colors?: string;
 
   @ApiProperty({ enum: RoomTypeEnum })
   type: RoomTypeEnum;
+
+  @ApiProperty({ default: false })
+  isPrivate: boolean;
+
+  @ApiProperty({ type: [CreateQuestionDto], required: false })
+  questions?: CreateQuestionDto[];
 }
