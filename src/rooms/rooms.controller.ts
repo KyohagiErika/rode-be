@@ -94,12 +94,7 @@ export class RoomsController {
         err,
       );
     }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get room success!',
-      room,
-      null,
-    );
+    return new ResponseObject(HttpStatus.OK, 'Get room success!', room, null);
   }
 
   @Get('get-one-by-code/:code')
@@ -114,11 +109,6 @@ export class RoomsController {
         err,
       );
     }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get room success!',
-      room,
-      null,
-    );
+    return new ResponseObject(HttpStatus.OK, 'Get room success!', room, null);
   }
 }

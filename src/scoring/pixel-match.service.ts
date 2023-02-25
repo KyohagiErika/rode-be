@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import pixelmatch from "pixelmatch";
-import PNG from "png-ts";
+import { Injectable } from '@nestjs/common';
+import pixelmatch from 'pixelmatch';
+import PNG from 'png-ts';
 
 @Injectable()
 export class PixelMatchService {
-    constructor() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  constructor() {}
 
-    async compareImages() {
-        
-    }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async compareImages() {}
 }

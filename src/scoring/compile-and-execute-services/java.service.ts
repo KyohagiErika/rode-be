@@ -29,13 +29,18 @@ export class JavaService {
     let compileErr = null;
     const id = randomUUID();
     fs.mkdirSync(path.resolve(this.scoringPath + `/${id}`));
-    fs.writeFileSync(path.resolve(this.scoringPath + `/${id}/${id}.java`), code);
+    fs.writeFileSync(
+      path.resolve(this.scoringPath + `/${id}/${id}.java`),
+      code,
+    );
     try {
-      cp.execSync(`javac ${path.resolve(this.scoringPath + `/${id}/${id}.java`)}`);
+      cp.execSync(
+        `javac ${path.resolve(this.scoringPath + `/${id}/${id}.java`)}`,
+      );
     } catch (err) {
       compileErr = err.message;
     }
-    
+
     fs.unlinkSync(path.resolve(this.scoringPath + `/${id}/${id}.java`));
     return [id, compileErr];
   }
@@ -58,7 +63,9 @@ export class JavaService {
         );
         const t2 = performance.now();
         const dt = t2 - t1;
-        testCaseStatistics.push(result.toString().trim() == testCase.output.trim());
+        testCaseStatistics.push(
+          result.toString().trim() == testCase.output.trim(),
+        );
         totalTime += dt;
       }
     } catch (err) {
@@ -69,6 +76,9 @@ export class JavaService {
       fs.rmSync(path.resolve(this.scoringPath + `/${id}`), { recursive: true });
     }
 
-    return [{ testCaseStatistics: testCaseStatistics, execTime: totalTime }, null];
+    return [
+      { testCaseStatistics: testCaseStatistics, execTime: totalTime },
+      null,
+    ];
   }
 }

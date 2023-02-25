@@ -37,7 +37,7 @@ export class RoomsService {
         testCases: question.testCases.map((testCase) => ({
           input: testCase.input,
           output: testCase.output,
-        }))
+        })),
       })),
     });
     return [room, null];
@@ -56,7 +56,7 @@ export class RoomsService {
       relations: {
         questions: {
           testCases: true,
-        }
+        },
       },
     });
     if (!room) {
@@ -71,7 +71,7 @@ export class RoomsService {
         code: code,
       },
       relations: {
-        questions: true
+        questions: true,
       },
     });
     if (!room) {
