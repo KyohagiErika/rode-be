@@ -12,7 +12,7 @@ import { RoomsService } from './rooms.service';
 
 @Controller('rooms')
 @UseGuards(JwtAuthGuard)
-@ApiTags('rooms')
+@ApiTags('Rooms')
 @ApiBearerAuth()
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}

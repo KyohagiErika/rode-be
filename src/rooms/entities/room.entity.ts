@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoomTypeEnum } from '../../etc/enums';
 import { Question } from './question.entity';
+import { UserRoom } from '../../user-rooms/entities/user-room.entity';
 
 @Entity()
 export class Room {
@@ -32,4 +33,7 @@ export class Room {
 
   @Column({ default: false })
   isPrivate: boolean;
+
+  @OneToMany(() => UserRoom, (userRooms) => userRooms.room)
+  userRooms: UserRoom[];
 }

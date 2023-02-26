@@ -16,11 +16,11 @@ import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import ResponseObject from '../etc/response-object';
 import { UpdateAccountDto } from './dtos/update-account.dto';
-import CurrentAccount from 'src/decorators/current-account.decorator';
+import CurrentAccount from '@decorators/current-account.decorator';
 import { Account } from './entities/account.entity';
 
 @Controller('accounts')
-@ApiTags('accounts')
+@ApiTags('Accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 

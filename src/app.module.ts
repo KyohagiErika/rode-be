@@ -8,6 +8,7 @@ import { HttpModule } from '@nestjs/axios';
 import { RoomsModule } from './rooms/rooms.module';
 import { LocalFilesModule } from './local-files/local-files.module';
 import { ScoringModule } from './scoring/scoring.module';
+import { UserRoomsModule } from './user-rooms/user-rooms.module';
 import LoggerMiddleware from './etc/logger.middleware';
 
 @Module({
@@ -19,6 +20,7 @@ import LoggerMiddleware from './etc/logger.middleware';
     RoomsModule,
     LocalFilesModule,
     ScoringModule,
+    UserRoomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

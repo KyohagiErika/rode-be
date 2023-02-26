@@ -15,7 +15,7 @@ import { ScoringService } from './scoring.service';
 import CurrentAccount from '../decorators/current-account.decorator';
 import { Account } from '../accounts/entities/account.entity';
 import { SubmitDto } from './dtos/submit.dto';
-import ResponseObject from 'src/etc/response-object';
+import ResponseObject from '@etc/response-object';
 
 @Controller('scoring')
 @UseGuards(JwtAuthGuard)

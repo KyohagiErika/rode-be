@@ -79,4 +79,13 @@ export class RoomsService {
     }
     return [room, null];
   }
+
+  async isExisted(id: string): Promise<boolean> {
+    const result = await this.roomRepository.exist({
+      where: {
+        id,
+      },
+    });
+    return result;
+  }
 }
