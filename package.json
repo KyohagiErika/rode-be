@@ -6,6 +6,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "prepare": "husky install",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -23,16 +24,7 @@
     "typeorm:create": "typeorm-ts-node-commonjs migration:create src/migrations/seed",
     "typeorm:run": "typeorm-ts-node-commonjs migration:run -d src/database/datasource.ts",
     "typeorm:version": "typeorm-ts-node-commonjs -v",
-    "typeorm:sync": "typeorm-ts-node-commonjs schema:sync -d src/database/datasource.ts",
-    "lint-staged": "lint-staged",
-    "postinstall": "husky install"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "npm run lint",
-      "npm run format",
-      "git add ."
-    ]
+    "typeorm:sync": "typeorm-ts-node-commonjs schema:sync -d src/database/datasource.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",
@@ -75,7 +67,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.3",
     "jest": "28.0.3",
-    "lint-staged": "^13.1.2",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
