@@ -1,17 +1,23 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { QuestionTestCase } from "./question-test-case.entity";
-import { Room } from "./room.entity";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { QuestionTestCase } from './question-test-case.entity';
+import { Room } from './room.entity';
 
 @Entity()
 export class Question {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    questionImage: string;
+  @Column()
+  questionImage: string;
 
-    @Column()
-    maxSubmitTimes: number;
+  @Column()
+  maxSubmitTimes: number;
 
     @Column({ nullable: true })
     colors: string;
@@ -22,6 +28,10 @@ export class Question {
     @ManyToOne(() => Room, { onDelete: 'CASCADE' })
     room: Room;
 
-    @OneToMany(() => QuestionTestCase, (questionTestCase) => questionTestCase.question, { cascade: true })
-    testCases: QuestionTestCase[];
+  @OneToMany(
+    () => QuestionTestCase,
+    (questionTestCase) => questionTestCase.question,
+    { cascade: true },
+  )
+  testCases: QuestionTestCase[];
 }

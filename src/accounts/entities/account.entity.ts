@@ -1,5 +1,6 @@
 import { RoleEnum } from '../../etc/enums';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { UserRoom } from '../../user-rooms/entities/user-room.entity';
 
 @Entity()
 export class Account {
@@ -29,4 +30,7 @@ export class Account {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @OneToMany(() => UserRoom, (userRooms) => userRooms.account)
+  userRooms: UserRoom[];
 }

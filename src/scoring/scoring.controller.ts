@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role.guard';
 import Roles from '../decorators/roles.decorator';
@@ -15,7 +8,7 @@ import { ScoringService } from './scoring.service';
 import CurrentAccount from '../decorators/current-account.decorator';
 import { Account } from '../accounts/entities/account.entity';
 import { SubmitDto } from './dtos/submit.dto';
-import ResponseObject from 'src/etc/response-object';
+import ResponseObject from '@etc/response-object';
 
 @Controller('scoring')
 @UseGuards(JwtAuthGuard)

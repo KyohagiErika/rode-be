@@ -8,7 +8,7 @@ import { resolve } from "path";
 
 @Injectable()
 export class PixelMatchService {
-    constructor() { }
+  constructor() {}
 
     async test(css: string, htmlContent: string) {
         const pathToTemplate = resolve(__dirname + "/../../css-scoring/css-render.hbs");

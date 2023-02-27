@@ -12,7 +12,7 @@ import { RoomsService } from './rooms.service';
 
 @Controller('rooms')
 @UseGuards(JwtAuthGuard)
-@ApiTags('rooms')
+@ApiTags('Rooms')
 @ApiBearerAuth()
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
@@ -94,12 +94,7 @@ export class RoomsController {
         err,
       );
     }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get room success!',
-      room,
-      null,
-    );
+    return new ResponseObject(HttpStatus.OK, 'Get room success!', room, null);
   }
 
   @Get('get-one-by-code/:code')
@@ -114,11 +109,6 @@ export class RoomsController {
         err,
       );
     }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get room success!',
-      room,
-      null,
-    );
+    return new ResponseObject(HttpStatus.OK, 'Get room success!', room, null);
   }
 }

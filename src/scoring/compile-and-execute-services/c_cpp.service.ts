@@ -59,7 +59,9 @@ export class C_CPPSevice {
         });
         const t2 = performance.now();
         const dt = t2 - t1;
-        testCaseStatistics.push(result.toString().trim() == testCase.output.trim());
+        testCaseStatistics.push(
+          result.toString().trim() == testCase.output.trim(),
+        );
         totalTime += dt;
       }
     } catch (err) {
@@ -73,6 +75,9 @@ export class C_CPPSevice {
       fs.unlinkSync(path.resolve(this.scoringPath + `/${id}.exe`));
     }
 
-    return [{ testCaseStatistics: testCaseStatistics, execTime: totalTime }, null];
+    return [
+      { testCaseStatistics: testCaseStatistics, execTime: totalTime },
+      null,
+    ];
   }
 }

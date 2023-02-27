@@ -1,9 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateQuestionTestCaseDto {
-    @ApiProperty()
-    input: string;
+  @ApiProperty()
+  input: string;
 
-    @ApiProperty()
-    output: string;
+  @ApiProperty()
+  output: string;
 }

@@ -23,7 +23,9 @@ export class ScoringService {
     if (err) {
       return [null, err];
     }
-    const question = room.questions.find(ele => ele.id == submitDto.questionId);
+    const question = room.questions.find(
+      (ele) => ele.id == submitDto.questionId,
+    );
     if (!question) {
       return [null, 'Question not found'];
     }
@@ -37,7 +39,10 @@ export class ScoringService {
             );
           }
           case ProgrammingLangEnum.JAVA: {
-            return this.javaService.compileAndExecute(submitDto.code, question.testCases);
+            return this.javaService.compileAndExecute(
+              submitDto.code,
+              question.testCases,
+            );
           }
           default: {
             return [null, 'Language not supported'];
@@ -45,7 +50,6 @@ export class ScoringService {
         }
       }
       case RoomTypeEnum.FE: {
-        
       }
       default: {
         return [null, 'Room type not supported'];
