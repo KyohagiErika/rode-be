@@ -19,7 +19,7 @@ export class ScoringService {
   ) {}
 
   async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
-    const [room, err] = await this.roomsService.findOneById(submitDto.roomId, true);
+    const [room, err] = await this.roomsService.findOneById(submitDto.roomId);
     if (err) {
       return [null, err];
     }
@@ -50,6 +50,7 @@ export class ScoringService {
         }
       }
       case RoomTypeEnum.FE: {
+        
       }
       default: {
         return [null, 'Room type not supported'];
