@@ -27,6 +27,17 @@ export class AccountsController {
     return new ResponseObject(HttpStatus.OK, 'Get all accounts success!', accounts, null);
   }
 
+  @Get('get-one/:id')
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async getById(@Param('id') id: string) {
+    const account = await this.accountsService.getById(id);
+    if (!account) {
+      return new ResponseObject(HttpStatus.BAD_REQUEST, 'Get account failed!',null, 'check ID again');
+    }
+    return new ResponseObject(HttpStatus.OK, 'Get account success!', account, null);
+  }
+
   @Post('create-one')
   async createOne(@Body() info: CreateAccountDto) {
     const [account, err] = await this.accountsService.createOne(info);
