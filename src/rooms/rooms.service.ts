@@ -27,13 +27,14 @@ export class RoomsService {
       code: info.code,
       closeTime: info.closeTime,
       openTime: info.openTime,
-      colors: info.colors,
       duration: info.duration,
       type: info.type,
       isPrivate: info.isPrivate,
       questions: info.questions.map((question) => ({
         questionImage: question.questionImage,
         maxSubmitTimes: question.maxSubmitTimes,
+        colors: question.colors,
+        htmlTemplate: question.htmlTemplate,
         testCases: question.testCases.map((testCase) => ({
           input: testCase.input,
           output: testCase.output,

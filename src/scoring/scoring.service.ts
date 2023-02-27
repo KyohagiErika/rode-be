@@ -5,6 +5,9 @@ import { SubmitDto } from './dtos/submit.dto';
 import { ProgrammingLangEnum, RoomTypeEnum } from '../etc/enums';
 import { C_CPPSevice } from './compile-and-execute-services/c_cpp.service';
 import { JavaService } from './compile-and-execute-services/java.service';
+import { PixelMatchService } from './pixel-match.service';
+import * as fs from 'fs';
+import { resolve } from 'path';
 
 @Injectable()
 export class ScoringService {
@@ -12,6 +15,7 @@ export class ScoringService {
     private readonly roomsService: RoomsService,
     private readonly c_cppService: C_CPPSevice,
     private readonly javaService: JavaService,
+    private readonly pixelMatchService: PixelMatchService,
   ) {}
 
   async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
@@ -51,5 +55,11 @@ export class ScoringService {
         return [null, 'Room type not supported'];
       }
     }
+  }
+
+  async testImage() {
+    const htmlContent = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.html'));
+    const css = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.css'));
+    await this.pixelMatchService.test(css.toString(), htmlContent.toString());
   }
 }

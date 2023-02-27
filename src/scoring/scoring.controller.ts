@@ -34,4 +34,9 @@ export class ScoringController {
     }
     return new ResponseObject(HttpStatus.OK, 'Submit success!', result, null);
   }
+
+  @Get('test-image')
+  async testImage() {
+    return await this.scoringService.testImage();
+  }
 }

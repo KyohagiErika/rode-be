@@ -15,9 +15,6 @@ export class CreateRoomDto {
   @ApiProperty()
   duration: number;
 
-  @ApiProperty({ required: false })
-  colors?: string;
-
   @ApiProperty({ enum: RoomTypeEnum })
   type: RoomTypeEnum;
 

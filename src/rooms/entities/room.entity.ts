@@ -20,9 +20,6 @@ export class Room {
   @Column()
   duration: number;
 
-  @Column({ nullable: true })
-  colors: string;
-
   @Column({ type: 'enum', enum: RoomTypeEnum })
   type: RoomTypeEnum;
 

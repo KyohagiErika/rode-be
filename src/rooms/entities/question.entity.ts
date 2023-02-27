@@ -19,8 +19,14 @@ export class Question {
   @Column()
   maxSubmitTimes: number;
 
-  @ManyToOne(() => Room, { onDelete: 'CASCADE' })
-  room: Room;
+    @Column({ nullable: true })
+    colors: string;
+
+    @Column({ nullable: true, length: 3000 })
+    htmlTemplate: string;
+
+    @ManyToOne(() => Room, { onDelete: 'CASCADE' })
+    room: Room;
 
   @OneToMany(
     () => QuestionTestCase,
