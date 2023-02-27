@@ -13,6 +13,12 @@ export class Question {
     @Column()
     maxSubmitTimes: number;
 
+    @Column({ nullable: true })
+    colors: string;
+
+    @Column({ nullable: true, length: 3000 })
+    htmlTemplate: string;
+
     @ManyToOne(() => Room, { onDelete: 'CASCADE' })
     room: Room;
 
