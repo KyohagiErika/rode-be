@@ -49,15 +49,13 @@ export class RoomsService {
     return [rooms, null];
   }
 
-  async findOneById(id: string): Promise<[Room, any]> {
+  async findOneById(id: string, withTestCase?: boolean): Promise<[Room, any]> {
     const room = await this.roomRepository.findOne({
       where: {
         id: id,
       },
       relations: {
-        questions: {
-          testCases: true,
-        },
+        questions: withTestCase ? { testCases: true } : true,
       },
     });
     if (!room) {

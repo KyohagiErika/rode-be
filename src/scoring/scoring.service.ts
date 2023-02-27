@@ -19,7 +19,7 @@ export class ScoringService {
   ) {}
 
   async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
-    const [room, err] = await this.roomsService.findOneById(submitDto.roomId);
+    const [room, err] = await this.roomsService.findOneById(submitDto.roomId, true);
     if (err) {
       return [null, err];
     }
