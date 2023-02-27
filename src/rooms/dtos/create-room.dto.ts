@@ -1,25 +1,26 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { RoomTypeEnum } from "../../etc/enums";
+import { ApiProperty } from '@nestjs/swagger';
+import { RoomTypeEnum } from '../../etc/enums';
+import { CreateQuestionDto } from './create-question.dto';
 
 export class CreateRoomDto {
-    @ApiProperty()
-    code: string;
+  @ApiProperty()
+  code: string;
 
-    @ApiProperty()
-    openTime: Date;
+  @ApiProperty()
+  openTime: Date;
 
-    @ApiProperty()
-    closeTime: Date;
+  @ApiProperty()
+  closeTime: Date;
 
-    @ApiProperty()
-    duration: number;
+  @ApiProperty()
+  duration: number;
 
-    @ApiProperty()
-    questions: string[];
+  @ApiProperty({ enum: RoomTypeEnum })
+  type: RoomTypeEnum;
 
-    @ApiProperty({ required: false })
-    color: string;
+  @ApiProperty({ default: false })
+  isPrivate: boolean;
 
-    @ApiProperty()
-    type: RoomTypeEnum;
+  @ApiProperty({ type: [CreateQuestionDto], required: false })
+  questions?: CreateQuestionDto[];
 }

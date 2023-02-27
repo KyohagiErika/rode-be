@@ -6,44 +6,44 @@ import RodeConfig from '../etc/config';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly accountsService: AccountsService,
-        private readonly jwtService: JwtService,
-    ) {}
+  constructor(
+    private readonly accountsService: AccountsService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    async getInfoFromGoogle(credential: string) {
-        const client = new OAuth2Client(RodeConfig.GOOGLE_CLIENT_ID);
-        try {
-            const ticket = await client.verifyIdToken({
-                idToken: credential,
-                audience: RodeConfig.GOOGLE_CLIENT_ID,
-            });
-            const payload = ticket.getPayload();
-            // if (payload.hd != 'fpt.edu.vn') {
-            //     return [null, 'Your email is not allowed'];
-            // }
-            return [payload, null];
-        } catch (err) {
-            return [null, err];
-        }
+  async getInfoFromGoogle(credential: string) {
+    const client = new OAuth2Client(RodeConfig.GOOGLE_CLIENT_ID);
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: RodeConfig.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      // if (payload.hd != 'fpt.edu.vn') {
+      //     return [null, 'Your email is not allowed'];
+      // }
+      return [payload, null];
+    } catch (err) {
+      return [null, err];
+    }
+  }
+
+  async googleLogin(credential: string) {
+    // Verify credential
+    const [payload, err] = await this.getInfoFromGoogle(credential);
+    if (err) {
+      return [null, err];
+    }
+    const email = payload.email;
+
+    // Check database
+    const account = await this.accountsService.getByEmail(email);
+    if (!account) {
+      return [null, 'Account not found'];
     }
 
-    async googleLogin(credential: string) {
-        // Verify credential
-        const [payload, err] = await this.getInfoFromGoogle(credential);
-        if (err) {
-            return [null, err];
-        }
-        const email = payload.email;
-
-        // Check database
-        const account = await this.accountsService.getByEmail(email);
-        if (!account) {
-            return [null, 'Account not found'];
-        }
-
-        // Sign JWT
-        const token = this.jwtService.sign({ sub: account.id });
-        return [token, null];
-    }
+    // Sign JWT
+    const token = this.jwtService.sign({ sub: account.id });
+    return [token, null];
+  }
 }

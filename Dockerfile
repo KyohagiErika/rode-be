@@ -1,4 +1,5 @@
-FROM node:16
+FROM node:16-alpine
+RUN apk add openjdk8 gcc
 WORKDIR /app
 COPY . .
 COPY .env.deploy .env

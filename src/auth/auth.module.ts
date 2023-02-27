@@ -14,11 +14,11 @@ import { JwtStrategy } from './jwt.strategy';
       secret: RodeConfig.JWT_SECRET,
       signOptions: {
         expiresIn: RodeConfig.JWT_EXPIRES_IN,
-      }
+      },
     }),
-    AccountsModule
+    AccountsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy]
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

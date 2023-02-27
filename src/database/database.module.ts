@@ -5,18 +5,16 @@ import { DatabaseService } from './database.service';
 import { Account } from '../accounts/entities/account.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRoot(RodeDataSource.options),
-        TypeOrmModule.forFeature([Account]),
-    ],
-    providers: [DatabaseService],
+  imports: [
+    TypeOrmModule.forRoot(RodeDataSource.options),
+    TypeOrmModule.forFeature([Account]),
+  ],
+  providers: [DatabaseService],
 })
 export class DatabaseModule {
-    constructor(
-        private readonly databaseService: DatabaseService,
-    ) {}
-    
-    onModuleInit() {
-        this.databaseService.loadAdmin();
-    }
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  onModuleInit() {
+    this.databaseService.loadAdmin();
+  }
 }

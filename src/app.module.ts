@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -7,6 +7,9 @@ import { AccountsModule } from './accounts/accounts.module';
 import { HttpModule } from '@nestjs/axios';
 import { RoomsModule } from './rooms/rooms.module';
 import { LocalFilesModule } from './local-files/local-files.module';
+import { ScoringModule } from './scoring/scoring.module';
+import { UserRoomsModule } from './user-rooms/user-rooms.module';
+import LoggerMiddleware from './etc/logger.middleware';
 
 @Module({
   imports: [
@@ -15,9 +18,15 @@ import { LocalFilesModule } from './local-files/local-files.module';
     AuthModule,
     AccountsModule,
     RoomsModule,
-    LocalFilesModule
+    LocalFilesModule,
+    ScoringModule,
+    UserRoomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
