@@ -50,7 +50,6 @@ export class ScoringService {
         }
       }
       case RoomTypeEnum.FE: {
-        
       }
       default: {
         return [null, 'Room type not supported'];
@@ -59,8 +58,12 @@ export class ScoringService {
   }
 
   async testImage() {
-    const htmlContent = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.html'));
-    const css = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.css'));
+    const htmlContent = fs.readFileSync(
+      resolve(__dirname + '/../../css-scoring/test.html'),
+    );
+    const css = fs.readFileSync(
+      resolve(__dirname + '/../../css-scoring/test.css'),
+    );
     await this.pixelMatchService.test(css.toString(), htmlContent.toString());
   }
 }

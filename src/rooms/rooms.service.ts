@@ -56,8 +56,8 @@ export class RoomsService {
       },
       relations: {
         questions: {
-          testCases: true
-        }
+          testCases: true,
+        },
       },
     });
     if (!room) {

@@ -19,7 +19,7 @@ import { LocalFilesModule } from '@local-files/local-files.module';
     ScoringService,
     C_CPPSevice,
     JavaService,
-    PixelMatchService
+    PixelMatchService,
   ],
   imports: [RoomsModule, LocalFilesModule],
 })
