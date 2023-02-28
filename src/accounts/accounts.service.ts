@@ -12,8 +12,17 @@ export class AccountsService {
     private readonly accountRepository: Repository<Account>,
   ) {}
 
-  async getAll() {
-    const accounts = await this.accountRepository.find();
+  async getAll(active: string | null) {
+    if (!active) {
+      const accounts = await this.accountRepository.find();
+      return [accounts, null];
+    }
+    const isActive = active == 'true' ? true : false;
+    const accounts = await this.accountRepository.find({
+      where: {
+        isActive,
+      },
+    });
     return [accounts, null];
   }
 
@@ -147,23 +156,5 @@ export class AccountsService {
     account.isActive = !account.isActive;
     await this.accountRepository.save(account);
     return [account, null];
-  }
-
-  async getActive() {
-    const accounts = await this.accountRepository.find({
-      where: {
-        isActive: true,
-      },
-    });
-    return [accounts, null];
-  }
-
-  async getInactive() {
-    const accounts = await this.accountRepository.find({
-      where: {
-        isActive: false,
-      },
-    });
-    return [accounts, null];
   }
 }

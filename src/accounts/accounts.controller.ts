@@ -5,9 +5,10 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role.guard';
 import Roles from '../decorators/roles.decorator';
 import { RoleEnum } from '../etc/enums';
@@ -25,11 +26,12 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Get('get-all')
+  @ApiQuery({ name: 'active', required: false, type: String })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
-  async getAll() {
-    const [accounts, err] = await this.accountsService.getAll();
+  async getAll(@Query('active') active: string | null) {
+    const [accounts, err] = await this.accountsService.getAll(active);
     if (!accounts) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
@@ -112,50 +114,6 @@ export class AccountsController {
       HttpStatus.OK,
       'Toggle active account success!',
       account,
-      null,
-    );
-  }
-
-  @Get('get-active')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  async getActive() {
-    const [accounts, err] = await this.accountsService.getActive();
-    if (!accounts) {
-      return new ResponseObject(
-        HttpStatus.BAD_REQUEST,
-        'Get active accounts failed!',
-        null,
-        err,
-      );
-    }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get active accounts success!',
-      accounts,
-      null,
-    );
-  }
-
-  @Get('get-inactive')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(RoleEnum.ADMIN)
-  async getInactive() {
-    const [accounts, err] = await this.accountsService.getInactive();
-    if (!accounts) {
-      return new ResponseObject(
-        HttpStatus.BAD_REQUEST,
-        'Get inactive accounts failed!',
-        null,
-        err,
-      );
-    }
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get inactive accounts success!',
-      accounts,
       null,
     );
   }
