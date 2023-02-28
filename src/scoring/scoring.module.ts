@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { C_CPPSevice } from './compile-and-execute-services/c_cpp.service';
 import { JavaService } from './compile-and-execute-services/java.service';
 import { PixelMatchService } from './pixel-match.service';
+import { LocalFilesModule } from '@local-files/local-files.module';
 
 @Module({
   controllers: [ScoringController],
@@ -20,7 +21,7 @@ import { PixelMatchService } from './pixel-match.service';
     JavaService,
     PixelMatchService,
   ],
-  imports: [RoomsModule],
+  imports: [RoomsModule, LocalFilesModule],
 })
 export class ScoringModule {
   constructor(@Inject('SCORING_PATH') private scoringPath: string) {}
