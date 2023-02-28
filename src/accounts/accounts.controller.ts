@@ -115,4 +115,48 @@ export class AccountsController {
       null,
     );
   }
+
+  @Get('get-active')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  async getActive() {
+    const [accounts, err] = await this.accountsService.getActive();
+    if (!accounts) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get active accounts failed!',
+        null,
+        err,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get active accounts success!',
+      accounts,
+      null,
+    );
+  }
+
+  @Get('get-inactive')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async getInactive() {
+    const [accounts, err] = await this.accountsService.getInactive();
+    if (!accounts) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get inactive accounts failed!',
+        null,
+        err,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get inactive accounts success!',
+      accounts,
+      null,
+    );
+  }
 }

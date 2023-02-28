@@ -148,4 +148,22 @@ export class AccountsService {
     await this.accountRepository.save(account);
     return [account, null];
   }
+
+  async getActive() {
+    const accounts = await this.accountRepository.find({
+      where: {
+        isActive: true,
+      },
+    });
+    return [accounts, null];
+  }
+
+  async getInactive() {
+    const accounts = await this.accountRepository.find({
+      where: {
+        isActive: false,
+      },
+    });
+    return [accounts, null];
+  }
 }
