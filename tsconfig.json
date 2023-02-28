@@ -16,7 +16,7 @@
       "@database/*": ["database/*"],
       "@decorators/*": ["decorators/*"],
       "@etc/*": ["etc/*"],
-      "@local-files": ["local-files/*"],
+      "@local-files/*": ["local-files/*"],
       "@rooms/*": ["rooms/*"],
       "@scoring/*": ["scoring/*"],
       "@user-rooms": ["user-rooms/*"]

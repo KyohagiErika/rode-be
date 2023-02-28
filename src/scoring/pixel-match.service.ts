@@ -1,14 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import pixelmatch from 'pixelmatch';
-import PNG from 'png-ts';
 import puppeteer from 'puppeteer';
 import Handlebars from 'handlebars';
 import * as fs from 'fs';
 import { resolve } from 'path';
+import { LocalFilesService } from '@local-files/local-files.service';
 
 @Injectable()
 export class PixelMatchService {
-  constructor() {}
+  constructor(private readonly localFilesService: LocalFilesService) {}
+
+  async score(localFileId: string, htmlTemplate: string, css: string) {
+    const [localFile, err] = await this.localFilesService.findOneById(
+      localFileId,
+    );
+    if (err) {
+      return [null, err];
+    }
+    const src = fs.readFileSync(
+      resolve(__dirname + '/../../' + localFile.path),
+    );
+    const [target, err2] = await this.renderImage(htmlTemplate, css);
+    if (err2) {
+      return [null, err2];
+    }
+    return this.compareImageWithTemplate(src, target);
+  }
 
   async test(css: string, htmlContent: string) {
     const pathToTemplate = resolve(
