@@ -19,7 +19,10 @@ export class ScoringService {
   ) {}
 
   async submit(account: Account, submitDto: SubmitDto): Promise<[any, any]> {
-    const [room, err] = await this.roomsService.findOneById(submitDto.roomId, true);
+    const [room, err] = await this.roomsService.findOneById(
+      submitDto.roomId,
+      true,
+    );
     if (err) {
       return [null, err];
     }
@@ -58,8 +61,12 @@ export class ScoringService {
   }
 
   async testImage() {
-    const htmlContent = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.html'));
-    const css = fs.readFileSync(resolve(__dirname + '/../../css-scoring/test.css'));
+    const htmlContent = fs.readFileSync(
+      resolve(__dirname + '/../../css-scoring/test.html'),
+    );
+    const css = fs.readFileSync(
+      resolve(__dirname + '/../../css-scoring/test.css'),
+    );
     await this.pixelMatchService.test(css.toString(), htmlContent.toString());
   }
 }

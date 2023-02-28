@@ -18,7 +18,7 @@ import { PixelMatchService } from './pixel-match.service';
     ScoringService,
     C_CPPSevice,
     JavaService,
-    PixelMatchService
+    PixelMatchService,
   ],
   imports: [RoomsModule],
 })
