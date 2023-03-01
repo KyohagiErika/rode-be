@@ -96,7 +96,7 @@ export class PixelMatchService {
     }
   }
 
-  async compareImageWithTemplate(src: Buffer, target: Buffer) {
+  compareImageWithTemplate(src: Buffer, target: Buffer) {
     try {
       const diff = src;
       const match = pixelmatch(src, target, diff, 300, 300);
