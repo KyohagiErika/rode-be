@@ -5,9 +5,10 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role.guard';
 import Roles from '../decorators/roles.decorator';
 import { RoleEnum } from '../etc/enums';
@@ -25,11 +26,12 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Get('get-all')
+  @ApiQuery({ name: 'active', required: false, type: String })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
-  async getAll() {
-    const [accounts, err] = await this.accountsService.getAll();
+  async getAll(@Query('active') active: string | null) {
+    const [accounts, err] = await this.accountsService.getAll(active);
     if (!accounts) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
