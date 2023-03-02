@@ -1,4 +1,4 @@
-import { Account } from '@accounts/entities/account.entity';
+import { Account } from '../../accounts/entities/account.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Room } from '@rooms/entities/room.entity';
+import { Room } from '../../rooms/entities/room.entity';
 
 @Entity()
 export class UserRoom {
