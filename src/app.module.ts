@@ -22,7 +22,7 @@ import { SubmitHistoryModule } from 'submitHistory/submitHistory.module';
     LocalFilesModule,
     ScoringModule,
     UserRoomsModule,
-    SubmitHistoryModule
+    SubmitHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
