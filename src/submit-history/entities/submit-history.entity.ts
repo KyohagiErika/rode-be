@@ -1,6 +1,6 @@
 import { Account } from '../../accounts/entities/account.entity';
 import { Question } from '../../rooms/entities/question.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class SubmitHistory {
@@ -11,8 +11,9 @@ export class SubmitHistory {
   score: number;
 
   @Column()
-  submision: string;
+  submisions: string;
 
+  @CreateDateColumn()
   @Column()
   submittedAt: Date;
 
@@ -25,9 +26,9 @@ export class SubmitHistory {
   @Column()
   space: number;
 
-  @ManyToOne(() => Account, (account) => account.submiHistorys)
+  @ManyToOne(() => Account, (account) => account.submitHistory)
   account: Account;
 
-  @ManyToOne(() => Question, (question) => question.submiHistorys)
+  @ManyToOne(() => Question, (question) => question.submitHistory)
   question: Question;
 }

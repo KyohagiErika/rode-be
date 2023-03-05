@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from '@auth/jwt-auth.guard';
 import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { SubmiHistoryService } from './submitHistory.service';
+import { SubmiHistoryService } from './submit-history.service';
 
 @Controller('submitHistorys')
 @UseGuards(JwtAuthGuard)

@@ -1,4 +1,4 @@
-import { SubmitHistory } from '../../submitHistory/entities/submitHistory.entity';
+import { SubmitHistory } from '../../submit-history/entities/submit-history.entity';
 import {
   Column,
   Entity,
@@ -36,6 +36,6 @@ export class Question {
   )
   testCases: QuestionTestCase[];
 
-  @OneToMany(() => SubmitHistory, (submitHistorys) => submitHistorys.question)
-  submiHistorys: SubmitHistory[];
+  @OneToMany(() => SubmitHistory, (submitHistory) => submitHistory.question)
+  submitHistory: SubmitHistory[];
 }

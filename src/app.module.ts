@@ -10,7 +10,7 @@ import { LocalFilesModule } from './local-files/local-files.module';
 import { ScoringModule } from './scoring/scoring.module';
 import { UserRoomsModule } from './user-rooms/user-rooms.module';
 import LoggerMiddleware from './etc/logger.middleware';
-import { SubmitHistoryModule } from 'submitHistory/submitHistory.module';
+import { SubmitHistoryModule } from 'submit-history/submit-history.module';
 
 @Module({
   imports: [
