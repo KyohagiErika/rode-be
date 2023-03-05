@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 
 @Injectable()
-export class SubmiHistoryService {
+export class SubmitHistoryService {
   constructor(
     @InjectRepository(SubmitHistory)
     private readonly submitHistoryRepository: Repository<SubmitHistory>,
