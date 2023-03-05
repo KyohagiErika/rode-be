@@ -14,10 +14,10 @@ export class Room {
   @Column()
   openTime: Date;
 
-  @Column()
+  @Column({ nullable: true })
   closeTime: Date;
 
-  @Column()
+  @Column({ nullable:true })
   duration: number;
 
   @Column({ type: 'enum', enum: RoomTypeEnum })
