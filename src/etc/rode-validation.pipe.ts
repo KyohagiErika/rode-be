@@ -1,4 +1,10 @@
-import { PipeTransform, Injectable, ArgumentMetadata, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  PipeTransform,
+  Injectable,
+  ArgumentMetadata,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import ResponseObject from './response-object';
@@ -12,7 +18,15 @@ export class RodeValidationPipe implements PipeTransform<any> {
     const object = plainToInstance(metatype, value);
     const errors = await validate(object);
     if (errors.length > 0) {
-      throw new HttpException(new ResponseObject(HttpStatus.BAD_REQUEST, 'Validation failed', null, this.formatErrors(errors)), HttpStatus.OK);
+      throw new HttpException(
+        new ResponseObject(
+          HttpStatus.BAD_REQUEST,
+          'Validation failed',
+          null,
+          this.formatErrors(errors),
+        ),
+        HttpStatus.OK,
+      );
     }
     return value;
   }
@@ -23,7 +37,7 @@ export class RodeValidationPipe implements PipeTransform<any> {
   }
 
   private formatErrors(errors: any[]) {
-    return errors.map(e => ({
+    return errors.map((e) => ({
       at: e.property,
       message: e.constraints ? Object.values(e.constraints).join(', ') : null,
       chidren: e.children ? this.formatErrors(e.children) : null,

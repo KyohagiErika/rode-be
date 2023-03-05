@@ -34,15 +34,15 @@ export class RoomsService {
    * + duration must be greater than 1
    * + if the room is public, it must not have closeTime or duration
    * + if the room is private, it must have closeTime and duration
-   * @param info 
-   * @returns 
+   * @param info
+   * @returns
    */
   async createOne(info: CreateRoomDto) {
     const errs = [];
     const checkCode = await this.roomRepository.findOne({
       where: {
         code: info.code,
-      }
+      },
     });
     if (checkCode) {
       errs.push({
@@ -121,19 +121,21 @@ export class RoomsService {
     await this.questionRepository.delete({
       room: { id: room.id },
     });
-    room.questions = info.questions.map((question) => this.questionRepository.create({
-      id: question.id,
-      questionImage: question.questionImage,
-      maxSubmitTimes: question.maxSubmitTimes,
-      colors: question.colors,
-      htmlTemplate: question.htmlTemplate,
-      room: room,
-      testCases: question.testCases.map((testCase) => ({
-        id: testCase.id,
-        input: testCase.input,
-        output: testCase.output,
-      }))
-    }));
+    room.questions = info.questions.map((question) =>
+      this.questionRepository.create({
+        id: question.id,
+        questionImage: question.questionImage,
+        maxSubmitTimes: question.maxSubmitTimes,
+        colors: question.colors,
+        htmlTemplate: question.htmlTemplate,
+        room: room,
+        testCases: question.testCases.map((testCase) => ({
+          id: testCase.id,
+          input: testCase.input,
+          output: testCase.output,
+        })),
+      }),
+    );
     const updatedRoom = await this.roomRepository.save(room);
     return [updatedRoom, null];
   }
