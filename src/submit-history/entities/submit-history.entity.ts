@@ -23,13 +23,10 @@ export class SubmitHistory {
   submittedAt: Date;
 
   @Column()
-  linesOfCode: number;
-
-  @Column()
   time: number;
 
   @Column()
-  space: number;
+  space: number; // uses for both FE (count number of chars) and BE
 
   @ManyToOne(() => Account, (account) => account.submitHistory)
   account: Account;
