@@ -3,9 +3,9 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
 
-@Controller('submitHistorys')
+@Controller('submit-history')
 @UseGuards(JwtAuthGuard)
-@ApiTags('SubmitHistorys')
+@ApiTags('SubmitHistory')
 @ApiBearerAuth()
 export class SubmitHistoryController {
   constructor(private readonly submiHistoryService: SubmitHistoryService) {}

@@ -20,7 +20,6 @@ export class SubmitHistory {
   submisions: string;
 
   @CreateDateColumn()
-  @Column()
   submittedAt: Date;
 
   @Column()
