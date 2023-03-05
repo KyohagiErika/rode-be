@@ -17,7 +17,7 @@ export class SubmitHistory {
   score: number;
 
   @Column()
-  submisions: string;
+  submissions: string;
 
   @CreateDateColumn()
   submittedAt: Date;
