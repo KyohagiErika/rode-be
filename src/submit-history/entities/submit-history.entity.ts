@@ -1,6 +1,12 @@
 import { Account } from '../../accounts/entities/account.entity';
 import { Question } from '../../rooms/entities/question.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class SubmitHistory {
