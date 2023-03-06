@@ -21,7 +21,6 @@ export class CreateQuestionDto {
   @ApiProperty({ required: false })
   htmlTemplate?: string;
 
-  @ApiProperty({ type: [CreateQuestionTestCaseDto] })
-  @IsDefined()
-  testCases: CreateQuestionTestCaseDto[];
+  @ApiProperty({ type: [CreateQuestionTestCaseDto], required: false })
+  testCases?: CreateQuestionTestCaseDto[];
 }

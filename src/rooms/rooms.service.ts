@@ -77,10 +77,10 @@ export class RoomsService {
         maxSubmitTimes: question.maxSubmitTimes,
         colors: question.colors,
         htmlTemplate: question.htmlTemplate,
-        testCases: question.testCases.map((testCase) => ({
+        testCases: question.testCases ? question.testCases.map((testCase) => ({
           input: testCase.input,
           output: testCase.output,
-        })),
+        })) : [],
       })),
     });
     return [room, null];
@@ -128,11 +128,11 @@ export class RoomsService {
       colors: question.colors,
       htmlTemplate: question.htmlTemplate,
       room: room,
-      testCases: question.testCases.map((testCase) => ({
+      testCases: question.testCases ? question.testCases.map((testCase) => ({
         id: testCase.id,
         input: testCase.input,
         output: testCase.output,
-      }))
+      })) : []
     }));
     const updatedRoom = await this.roomRepository.save(room);
     return [updatedRoom, null];
