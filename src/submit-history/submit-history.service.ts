@@ -9,4 +9,27 @@ export class SubmitHistoryService {
     @InjectRepository(SubmitHistory)
     private readonly submitHistoryRepository: Repository<SubmitHistory>,
   ) {}
+
+  async getByQuestion(question: string) {
+    const err = [];
+    const submitHistory = await this.submitHistoryRepository.find({
+      where:{
+        question: {id: question}
+      },
+      order: {
+        score: 'DESC',
+        time: 'ASC',
+        space: 'ASC',
+      }
+    })
+    if(!submitHistory){
+      err.push({
+        at: 'question',
+        message: 'can not find question',
+      });
+      return [null, err];
+    }
+    return [submitHistory,null]
+  }
+
 }

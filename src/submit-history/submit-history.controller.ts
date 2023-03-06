@@ -1,5 +1,6 @@
 import { JwtAuthGuard } from '@auth/jwt-auth.guard';
-import { Controller, UseGuards } from '@nestjs/common';
+import ResponseObject from '@etc/response-object';
+import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
 
@@ -9,4 +10,26 @@ import { SubmitHistoryService } from './submit-history.service';
 @ApiBearerAuth()
 export class SubmitHistoryController {
   constructor(private readonly submiHistoryService: SubmitHistoryService) {}
+
+  
+  @Get('get-by-question/:question')
+  async getByQuestion(@Param('question') question: string) {
+    const [submitHistory,err] = await this.submiHistoryService.getByQuestion(question);
+    if(!question){
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get leader board failed!',
+        null,
+        err,
+      );
+    }
+
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all leader board success!',
+      submitHistory,
+      null,
+    );
+
+  }
 }
