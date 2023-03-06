@@ -16,7 +16,7 @@ export class Question {
   @Column()
   questionImage: string;
 
-  @Column()
+  @Column({ nullable: true })
   maxSubmitTimes: number;
 
   @Column({ nullable: true })

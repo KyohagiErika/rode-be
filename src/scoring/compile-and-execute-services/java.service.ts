@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { BeResultDto } from '@scoring/dtos/be-result.dto';
 
 @Injectable()
 export class JavaService {
@@ -17,7 +18,7 @@ export class JavaService {
       input: string;
       output: string;
     }[],
-  ): [any, any] {
+  ): [BeResultDto, any] {
     const [id, err] = this.compile(code);
     if (err) {
       return [null, err];
@@ -51,7 +52,7 @@ export class JavaService {
       input: string;
       output: string;
     }[],
-  ): [any, any] {
+  ): [BeResultDto, any] {
     const testCaseStatistics = [];
     let totalTime = 0;
     try {

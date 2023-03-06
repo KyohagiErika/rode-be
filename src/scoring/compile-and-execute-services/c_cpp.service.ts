@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { randomUUID } from 'crypto';
 import * as cp from 'child_process';
+import { BeResultDto } from '@scoring/dtos/be-result.dto';
 
 @Injectable()
 export class C_CPPSevice {
@@ -17,7 +18,7 @@ export class C_CPPSevice {
       input: string;
       output: string;
     }[],
-  ): [any, any] {
+  ): [BeResultDto, any] {
     const [id, err] = this.compile(code);
     if (err) {
       return [null, err];
@@ -48,8 +49,8 @@ export class C_CPPSevice {
       input: string;
       output: string;
     }[],
-  ): [any, any] {
-    const testCaseStatistics = [];
+  ): [BeResultDto, any] {
+    const testCaseStatistics: boolean[] = [];
     let totalTime = 0;
     try {
       for (const testCase of testCases) {

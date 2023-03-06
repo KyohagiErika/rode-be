@@ -1,36 +1,31 @@
 import {
   Body,
   Controller,
-  Get,
   HttpStatus,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { RoleGuard } from '../auth/role.guard';
-import Roles from '../decorators/roles.decorator';
-import { RoleEnum } from '../etc/enums';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ScoringService } from './scoring.service';
-import CurrentAccount from '../decorators/current-account.decorator';
-import { Account } from '../accounts/entities/account.entity';
 import { SubmitDto } from './dtos/submit.dto';
 import ResponseObject from '@etc/response-object';
+import { RenderImageDto } from './dtos/render-image.dto';
+import { Response } from 'express';
 
 @Controller('scoring')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
+@ApiTags('Scoring')
 export class ScoringController {
   constructor(private readonly scoringService: ScoringService) {}
 
   @Post('test-submit')
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   async testSubmit(
-    @CurrentAccount() account: Account,
     @Body() body: SubmitDto,
   ) {
-    const [result, err] = await this.scoringService.submit(account, body);
+    const [result, err] = await this.scoringService.submit(body);
     if (err) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
@@ -42,8 +37,17 @@ export class ScoringController {
     return new ResponseObject(HttpStatus.OK, 'Submit success!', result, null);
   }
 
-  @Get('test-image')
-  async testImage() {
-    return await this.scoringService.testImage();
+  @Post('render-image')
+  async renderImage(@Body() body: RenderImageDto, @Res() res: Response) {
+    const [result, err] = await this.scoringService.renderImage(body);
+    res.header('Content-Type', 'image/png');
+    return res.send(result);
+  }
+
+  @Post('render-diff-image')
+  async renderDiffImage(@Body() body: SubmitDto, @Res() res: Response) {
+    const [result, err] = await this.scoringService.renderDiffImage(body);
+    res.header('Content-Type', 'image/png');
+    return res.send(result);
   }
 }
