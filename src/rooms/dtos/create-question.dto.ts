@@ -19,7 +19,7 @@ export class CreateQuestionDto {
   colors?: string;
 
   @ApiProperty({ required: false })
-  htmlTemplate?: string;
+  codeTemplate?: string;
 
   @ApiProperty({ type: [CreateQuestionTestCaseDto], required: false })
   testCases?: CreateQuestionTestCaseDto[];
