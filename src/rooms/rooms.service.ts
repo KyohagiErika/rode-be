@@ -76,7 +76,7 @@ export class RoomsService {
         questionImage: question.questionImage,
         maxSubmitTimes: question.maxSubmitTimes,
         colors: question.colors,
-        htmlTemplate: question.htmlTemplate,
+        codeTemplate: question.codeTemplate,
         testCases: question.testCases ? question.testCases.map((testCase) => ({
           input: testCase.input,
           output: testCase.output,
@@ -126,7 +126,7 @@ export class RoomsService {
       questionImage: question.questionImage,
       maxSubmitTimes: question.maxSubmitTimes,
       colors: question.colors,
-      htmlTemplate: question.htmlTemplate,
+      codeTemplate: question.codeTemplate,
       room: room,
       testCases: question.testCases ? question.testCases.map((testCase) => ({
         id: testCase.id,
