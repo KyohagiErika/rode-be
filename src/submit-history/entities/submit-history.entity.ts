@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProgrammingLangEnum } from '../../etc/enums';
 
 @Entity()
 export class SubmitHistory {
@@ -15,6 +16,9 @@ export class SubmitHistory {
 
   @Column()
   score: number;
+
+  @Column({ type: 'enum', enum: ProgrammingLangEnum, default: ProgrammingLangEnum.C_CPP })
+  language: ProgrammingLangEnum;
 
   @Column()
   submissions: string;
