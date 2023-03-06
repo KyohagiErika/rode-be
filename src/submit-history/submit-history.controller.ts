@@ -11,11 +11,12 @@ import { SubmitHistoryService } from './submit-history.service';
 export class SubmitHistoryController {
   constructor(private readonly submiHistoryService: SubmitHistoryService) {}
 
-  
   @Get('get-by-question/:question')
   async getByQuestion(@Param('question') question: string) {
-    const [submitHistory,err] = await this.submiHistoryService.getByQuestion(question);
-    if(!question){
+    const [submitHistory, err] = await this.submiHistoryService.getByQuestion(
+      question,
+    );
+    if (!question) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
         'Get leader board failed!',
@@ -30,6 +31,5 @@ export class SubmitHistoryController {
       submitHistory,
       null,
     );
-
   }
 }

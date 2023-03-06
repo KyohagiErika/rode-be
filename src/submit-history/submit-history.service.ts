@@ -13,23 +13,22 @@ export class SubmitHistoryService {
   async getByQuestion(question: string) {
     const err = [];
     const submitHistory = await this.submitHistoryRepository.find({
-      where:{
-        question: {id: question}
+      where: {
+        question: { id: question },
       },
       order: {
         score: 'DESC',
         time: 'ASC',
         space: 'ASC',
-      }
-    })
-    if(!submitHistory){
+      },
+    });
+    if (!submitHistory) {
       err.push({
         at: 'question',
         message: 'can not find question',
       });
       return [null, err];
     }
-    return [submitHistory,null]
+    return [submitHistory, null];
   }
-
 }
