@@ -1,6 +1,5 @@
 FROM node:16-alpine
-RUN apk install build-essential
-RUN apk add openjdk8 
+RUN apk add openjdk8 build-essential
 WORKDIR /app
 COPY . .
 COPY .env.deploy .env
