@@ -17,7 +17,11 @@ export class SubmitHistory {
   @Column()
   score: number;
 
-  @Column({ type: 'enum', enum: ProgrammingLangEnum, default: ProgrammingLangEnum.C_CPP })
+  @Column({
+    type: 'enum',
+    enum: ProgrammingLangEnum,
+    default: ProgrammingLangEnum.C_CPP,
+  })
   language: ProgrammingLangEnum;
 
   @Column()

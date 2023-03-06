@@ -6,7 +6,10 @@ import { SubmitHistoryController } from './submit-history.controller';
 import { SubmitHistoryService } from './submit-history.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SubmitHistory]), TypeOrmModule.forFeature([Question])],
+  imports: [
+    TypeOrmModule.forFeature([SubmitHistory]),
+    TypeOrmModule.forFeature([Question]),
+  ],
   controllers: [SubmitHistoryController],
   providers: [SubmitHistoryService],
   exports: [SubmitHistoryService],

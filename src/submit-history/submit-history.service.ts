@@ -13,13 +13,13 @@ export class SubmitHistoryService {
 
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-  ) { }
+  ) {}
 
   async getByQuestion(question: string) {
     const err = [];
     const checkQuestion = await this.questionRepository.findOne({
       relations: {
-        room: true
+        room: true,
       },
       where: {
         id: question,
@@ -31,13 +31,13 @@ export class SubmitHistoryService {
     if (checkQuestion.room.type == RoomTypeEnum.BE) {
       submitHistory = await this.submitHistoryRepository.find({
         relations: {
-          account: true
+          account: true,
         },
         select: {
           account: { fname: true, lname: true },
           score: true,
           time: true,
-          submittedAt: true
+          submittedAt: true,
         },
         where: {
           question: { id: question },
@@ -48,17 +48,16 @@ export class SubmitHistoryService {
           space: 'ASC',
         },
       });
-
     } else {
       submitHistory = await this.submitHistoryRepository.find({
         relations: {
-          account: true
+          account: true,
         },
         select: {
           account: { fname: true, lname: true },
           score: true,
           space: true,
-          submittedAt: true
+          submittedAt: true,
         },
         where: {
           question: { id: question },
@@ -77,6 +76,6 @@ export class SubmitHistoryService {
       });
       return [null, err];
     }
-    return [submitHistory, err]
+    return [submitHistory, err];
   }
 }
