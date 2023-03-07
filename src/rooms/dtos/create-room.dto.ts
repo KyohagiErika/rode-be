@@ -1,7 +1,17 @@
 import { IsGreaterThan } from '@etc/custom-validators';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsDefined, IsEnum, IsNotEmpty, IsNumber, Min, MinDate, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsDefined,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  MinDate,
+  ValidateNested,
+} from 'class-validator';
 import { RoomTypeEnum } from '../../etc/enums';
 import { CreateQuestionDto } from './create-question.dto';
 
@@ -18,7 +28,9 @@ export class CreateRoomDto {
 
   @ApiProperty()
   @IsDate()
-  @IsGreaterThan('openTime', { message: 'Close time must be greater than open time' })
+  @IsGreaterThan('openTime', {
+    message: 'Close time must be greater than open time',
+  })
   @Type(() => Date)
   closeTime: Date;
 

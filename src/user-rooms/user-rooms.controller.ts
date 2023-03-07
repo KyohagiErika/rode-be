@@ -8,6 +8,7 @@ import {
   UsePipes,
   ValidationPipe,
   Body,
+  Logger,
 } from '@nestjs/common';
 import { UserRoomsService } from './user-rooms.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -24,6 +25,7 @@ import { JoinRoomDTO } from './dtos/join-room.dto';
 @Controller('user-rooms')
 @ApiTags('UserRooms')
 export class UserRoomsController {
+  private readonly logger = new Logger(UserRoomsController.name);
   constructor(
     private readonly userRoomsService: UserRoomsService,
     private readonly roomsService: RoomsService,
@@ -44,10 +46,16 @@ export class UserRoomsController {
   @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
   @Roles(RoleEnum.USER)
   async join(
-    @Body() roomReq: JoinRoomDTO,
+    @Body() joinRoomDTO: JoinRoomDTO,
     @CurrentAccount() curAccount: Account,
   ) {
-    const [room, error] = await this.roomsService.findOneById(roomReq.roomId);
+    this.logger.log(
+      `User ${curAccount.email} is joining room ${joinRoomDTO.roomId}`,
+    );
+    const [room, error] = await this.roomsService.findOneById(
+      joinRoomDTO.roomId,
+    );
+    this.logger.log(`Room ${joinRoomDTO.roomId} has been found`);
     if (error) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
@@ -57,7 +65,7 @@ export class UserRoomsController {
       );
     }
 
-    //Check if user already joined room
+    this.logger.log('Check if user already joined room');
     const isJoined = await this.userRoomsService.isJoined(
       room.id,
       curAccount.id,
@@ -71,8 +79,8 @@ export class UserRoomsController {
       );
     }
 
-    //If private room: user must enter code to join
-    if (room.isPrivate && room.code !== roomReq.code) {
+    this.logger.log('Check if private room: user must enter code to join');
+    if (room.isPrivate && room.code !== joinRoomDTO.code) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
         'Room Number or Code not correct!',
@@ -81,6 +89,7 @@ export class UserRoomsController {
       );
     }
 
+    this.logger.log('Check if room is opened and then join');
     const [userRoom, err] = await this.userRoomsService.join(room, curAccount);
     if (!userRoom) {
       return new ResponseObject(
@@ -90,6 +99,7 @@ export class UserRoomsController {
         err,
       );
     }
+    this.logger.log('Join room success');
     return new ResponseObject(HttpStatus.OK, 'Join room success!', null, null);
   }
 
@@ -99,6 +109,7 @@ export class UserRoomsController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
   async findAllUsersInRoom(@Param('roomId') roomId: string) {
+    this.logger.log(`Get all users in room ${roomId}`);
     const isExisted = await this.roomsService.isExisted(roomId);
     if (!isExisted) {
       return new ResponseObject(
@@ -108,6 +119,7 @@ export class UserRoomsController {
         null,
       );
     }
+    this.logger.log('Room is existed!');
     const userRooms = await this.userRoomsService.findAllUsersInRoom(roomId);
     if (!userRooms) {
       return new ResponseObject(
@@ -117,6 +129,7 @@ export class UserRoomsController {
         null,
       );
     }
+    this.logger.log('Get all users in room success!');
     return new ResponseObject(
       HttpStatus.OK,
       'Get all users in room success!',
@@ -131,6 +144,7 @@ export class UserRoomsController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.USER)
   async findAllRoomsOfUser(@CurrentAccount() curAccount: Account) {
+    this.logger.log(`Get all rooms that user ${curAccount.email} joined`);
     return this.userRoomsService.findAllRoomsOfUser(curAccount.id);
   }
 }
