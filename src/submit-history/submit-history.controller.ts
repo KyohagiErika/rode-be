@@ -32,4 +32,15 @@ export class SubmitHistoryController {
       null,
     );
   }
+
+  @Get('get by room/:roomId')
+  async getByRoom(@Param('roomId') roomId: string) {
+    const [submits, err] = await this.submiHistoryService.getByRoom(roomId);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all leader board success!',
+      submits,
+      null,
+    );
+  }
 }
