@@ -1,4 +1,3 @@
-import { SubmitDto } from './../scoring/dtos/submit.dto';
 import { RoomTypeEnum } from '@etc/enums';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
