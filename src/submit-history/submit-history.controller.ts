@@ -1,8 +1,17 @@
 import { JwtAuthGuard } from '@auth/jwt-auth.guard';
 import ResponseObject from '@etc/response-object';
-import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
+import { CreateSubmitDto } from './dtos/create-submit-history.dto';
 
 @Controller('submit-history')
 @UseGuards(JwtAuthGuard)
@@ -33,13 +42,26 @@ export class SubmitHistoryController {
     );
   }
 
-  @Get('get by room/:roomId')
+  @Get('get-by-room/:roomId')
   async getByRoom(@Param('roomId') roomId: string) {
     const [submits, err] = await this.submiHistoryService.getByRoom(roomId);
     return new ResponseObject(
       HttpStatus.OK,
       'Get all leader board success!',
       submits,
+      null,
+    );
+  }
+
+  @Post('create-submit')
+  async createSubmit(@Body() createSubmit: CreateSubmitDto) {
+    const [submit, err] = await this.submiHistoryService.createSubmit(
+      createSubmit,
+    );
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Create submit success!',
+      submit,
       null,
     );
   }

@@ -1,3 +1,4 @@
+import { SubmitDto } from './../scoring/dtos/submit.dto';
 import { RoomTypeEnum } from '@etc/enums';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -5,6 +6,8 @@ import { Question } from '@rooms/entities/question.entity';
 import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 import { Room } from '@rooms/entities/room.entity';
+import { CreateSubmitDto } from './dtos/create-submit-history.dto';
+import { Account } from '@accounts/entities/account.entity';
 
 @Injectable()
 export class SubmitHistoryService {
@@ -17,6 +20,9 @@ export class SubmitHistoryService {
 
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
   ) {}
 
   async getByQuestion(question: string) {
@@ -124,6 +130,7 @@ export class SubmitHistoryService {
       submits = await this.submitHistoryRepository.find({
         relations: {
           account: true,
+          question: true,
         },
         where: {
           question: { room: { id: roomId } },
@@ -135,9 +142,9 @@ export class SubmitHistoryService {
           submittedAt: true,
         },
         order: {
-          // score: 'DESC',
-          // time: 'ASC',
           account: { id: 'ASC' },
+          score: 'DESC',
+          time: 'ASC',
         },
       });
       const checkSubmitQuestionAppear2times = new Map<string, number>();
@@ -186,7 +193,51 @@ export class SubmitHistoryService {
           totalTime = highestScoresSubmitEachQuestion[i].time;
         }
       }
+      // add last user score
+      highestScoresList.push({
+        account: {
+          fname:
+            highestScoresSubmitEachQuestion[
+              highestScoresSubmitEachQuestion.length - 1
+            ].account.fname,
+          lname:
+            highestScoresSubmitEachQuestion[
+              highestScoresSubmitEachQuestion.length - 1
+            ].account.lname,
+        },
+        score: totalScore,
+        time: totalTime,
+        submittedAt: finishTime.get(
+          highestScoresSubmitEachQuestion[
+            highestScoresSubmitEachQuestion.length - 1
+          ].account.id,
+        ),
+      });
       return [highestScoresList, null];
     }
+  }
+  async createSubmit(submitDto: CreateSubmitDto) {
+    const account = await this.accountRepository.findOne({
+      where: {
+        id: submitDto.accountId,
+      },
+    });
+    if (!account) return [null, 'Account not found!'];
+    const question = await this.questionRepository.findOne({
+      where: {
+        id: submitDto.questionId,
+      },
+    });
+    if (!question) return [null, 'Question not found!'];
+    const submit = await this.submitHistoryRepository.save({
+      score: submitDto.score,
+      submissions: submitDto.submissions,
+      submittedAt: submitDto.submittedAt,
+      time: submitDto.time,
+      space: submitDto.space,
+      account: account,
+      question: question,
+    });
+    return [submit, null];
   }
 }
