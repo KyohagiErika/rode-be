@@ -95,126 +95,59 @@ export class SubmitHistoryService {
       },
     });
     if (!room) return [null, 'Room not exist'];
-    let submits: SubmitHistory[] = [];
-    if (room.type == RoomTypeEnum.FE) {
-      submits = await this.submitHistoryRepository.find({
-        relations: {
-          account: true,
-        },
-        where: {
-          question: { room: { id: roomId } },
-        },
-        select: {
-          account: { id: true, fname: true, lname: true },
-          score: true,
-          space: true,
-          submittedAt: true,
-        },
-        order: {
-          score: 'DESC',
-          space: 'ASC',
-          submittedAt: 'ASC',
-        },
-      });
-      const checkAccountAppear2times = new Map<string, number>(); //key la id, number la gia tri khi set khac undefined va 0
-      const leaderboard = submits.filter((submit) => {
-        if (!checkAccountAppear2times.get(submit.account.id)) {
-          checkAccountAppear2times.set(submit.account.id, 1);
-          return 1;
-        }
-        return 0;
-      });
-      return [leaderboard, null];
-    } else {
-      submits = await this.submitHistoryRepository.find({
-        relations: {
-          account: true,
-          question: true,
-        },
-        where: {
-          question: { room: { id: roomId } },
-        },
-        select: {
-          account: { id: true, fname: true, lname: true },
-          score: true,
-          time: true,
-          submittedAt: true,
-        },
-        order: {
-          account: { id: 'ASC' },
-          score: 'DESC',
-          time: 'ASC',
-        },
-      });
-      const checkSubmitQuestionAppear2times = new Map<string, number>();
-      const finishTime = new Map<string, Date>();
-      const highestScoresSubmitEachQuestion = submits.filter((submit) => {
-        if (!finishTime.get(submit.account.id))
-          finishTime.set(submit.account.id, submit.submittedAt);
-        else if (finishTime.get(submit.account.id) < submit.submittedAt)
-          finishTime.set(submit.account.id, submit.submittedAt);
-        if (
-          !checkSubmitQuestionAppear2times.get(
-            `userId: ${submit.account.id}, questionId: ${submit.question.id}`,
-          )
-        ) {
-          checkSubmitQuestionAppear2times.set(
-            `userId: ${submit.account.id}, questionId: ${submit.question.id}`,
-            1,
-          );
-          return 1;
-        }
-        return 0;
-      });
-      const highestScoresList = [];
-      let totalScore: number = highestScoresSubmitEachQuestion[0].score;
-      let totalTime: number = highestScoresSubmitEachQuestion[0].time;
-      for (let i = 1; i < highestScoresSubmitEachQuestion.length; i++) {
-        if (
-          highestScoresSubmitEachQuestion[i].account.id ==
-          highestScoresSubmitEachQuestion[i - 1].account.id
-        ) {
-          totalScore += highestScoresSubmitEachQuestion[i].score;
-          totalTime += highestScoresSubmitEachQuestion[i].time;
-        } else {
-          highestScoresList.push({
-            account: {
-              fname: highestScoresSubmitEachQuestion[i - 1].account.fname,
-              lname: highestScoresSubmitEachQuestion[i - 1].account.lname,
-            },
-            score: totalScore,
-            time: totalTime,
-            submittedAt: finishTime.get(
-              highestScoresSubmitEachQuestion[i - 1].account.id,
-            ),
-          });
-          totalScore = highestScoresSubmitEachQuestion[i].score;
-          totalTime = highestScoresSubmitEachQuestion[i].time;
-        }
+    const submits = await this.submitHistoryRepository
+      .createQueryBuilder('submitHistory')
+      .leftJoinAndSelect('submitHistory.account', 'account')
+      .leftJoin('submitHistory.question', 'question')
+      .groupBy('submitHistory.account.id')
+      .addGroupBy('submitHistory.question.id')
+      .orderBy('submitHistory.account.id')
+      .addOrderBy('submitHistory.submittedAt', 'DESC')
+      .getMany();
+    if (!submits.length) return [submits, null];
+    const leaderboard = [];
+    let totalScore = submits[0].score;
+    let totalTime = submits[0].time;
+    let totalSpace = submits[0].space;
+    let submittedAt = submits[0].submittedAt;
+    for (let i = 1; i < submits.length; i++) {
+      if (submits[i].account.id == submits[i - 1].account.id) {
+        totalScore += submits[i].score;
+        totalTime += submits[i].time;
+        totalSpace += submits[i].space;
+      } else {
+        leaderboard.push({
+          account: submits[i - 1].account,
+          score: totalScore,
+          time: totalTime,
+          space: totalSpace,
+          submittedAt: submittedAt,
+        });
+        totalScore = submits[i].score;
+        totalTime = submits[i].time;
+        totalSpace = submits[i].space;
+        submittedAt = submits[i].submittedAt;
       }
-      // add last user score
-      highestScoresList.push({
-        account: {
-          fname:
-            highestScoresSubmitEachQuestion[
-              highestScoresSubmitEachQuestion.length - 1
-            ].account.fname,
-          lname:
-            highestScoresSubmitEachQuestion[
-              highestScoresSubmitEachQuestion.length - 1
-            ].account.lname,
-        },
-        score: totalScore,
-        time: totalTime,
-        submittedAt: finishTime.get(
-          highestScoresSubmitEachQuestion[
-            highestScoresSubmitEachQuestion.length - 1
-          ].account.id,
-        ),
-      });
-      return [highestScoresList, null];
     }
+    leaderboard.push({
+      account: submits[submits.length - 1].account,
+      score: totalScore,
+      time: totalTime,
+      space: totalSpace,
+      submittedAt: submittedAt,
+    });
+    leaderboard.sort((a, b) => {
+      if (a.score == b.score) {
+        if (a.time == b.time) {
+          return a.space - b.space;
+        }
+        return a.time - b.time;
+      }
+      return a.score - b.score;
+    });
+    return [leaderboard, null];
   }
+
   async createSubmit(submitDto: CreateSubmitDto) {
     const account = await this.accountRepository.findOne({
       where: {
