@@ -16,7 +16,7 @@ export class SubmitHistoryController {
     const [submitHistory, err] = await this.submiHistoryService.getByQuestion(
       question,
     );
-    if (!question) {
+    if (!question || !submitHistory) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
         'Get leader board failed!',
@@ -27,7 +27,7 @@ export class SubmitHistoryController {
 
     return new ResponseObject(
       HttpStatus.OK,
-      'Get all leader board success!',
+      'Get leader board successfull!',
       submitHistory,
       null,
     );

@@ -1,7 +1,5 @@
-import { RoomTypeEnum } from '@etc/enums';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Question } from '@rooms/entities/question.entity';
 import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 
@@ -11,65 +9,26 @@ export class SubmitHistoryService {
     @InjectRepository(SubmitHistory)
     private readonly submitHistoryRepository: Repository<SubmitHistory>,
 
-    @InjectRepository(Question)
-    private readonly questionRepository: Repository<Question>,
-  ) {}
+  ) { }
 
   async getByQuestion(question: string) {
     const err = [];
-    const checkQuestion = await this.questionRepository.findOne({
-      relations: {
-        room: true,
-      },
-      where: {
-        id: question,
-      },
-    });
+    const submitHistory = await this.submitHistoryRepository.createQueryBuilder("submitHistory")
+    .innerJoinAndSelect((subQuery)=> {
+      return subQuery
+      .select("lastSubmit.account", "account")
+      .addSelect("MAX(lastSubmit.submittedAt)", "submittedAt")
+      .from(SubmitHistory, "lastSubmit")
+      .where("lastSubmit.question.id = :id")
+      .groupBy("lastSubmit.account")
+    }, 'lastSubmits', 'lastSubmits.account=submitHistory.account AND lastSubmits.submittedAt=submitHistory.submittedAt' )
+    .leftJoinAndSelect("submitHistory.account","account")
+    .where("submitHistory.question.id = :id")
+    .setParameter("id", question)
+    .orderBy({ "submitHistory.score": "DESC", "submitHistory.time": "ASC", "submitHistory.space": "ASC" })
+    .getRawMany()
 
-    let submitHistory: SubmitHistory[] = [];
-
-    if (checkQuestion.room.type == RoomTypeEnum.BE) {
-      submitHistory = await this.submitHistoryRepository.find({
-        relations: {
-          account: true,
-        },
-        select: {
-          account: { fname: true, lname: true },
-          score: true,
-          time: true,
-          submittedAt: true,
-        },
-        where: {
-          question: { id: question },
-        },
-        order: {
-          score: 'DESC',
-          time: 'ASC',
-          space: 'ASC',
-        },
-      });
-    } else {
-      submitHistory = await this.submitHistoryRepository.find({
-        relations: {
-          account: true,
-        },
-        select: {
-          account: { fname: true, lname: true },
-          score: true,
-          space: true,
-          submittedAt: true,
-        },
-        where: {
-          question: { id: question },
-        },
-        order: {
-          score: 'DESC',
-          time: 'ASC',
-          space: 'ASC',
-        },
-      });
-    }
-    if (!submitHistory) {
+    if (!submitHistory.length) {
       err.push({
         at: 'question',
         message: 'can not find question',

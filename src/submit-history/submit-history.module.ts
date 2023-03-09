@@ -1,3 +1,4 @@
+import { Account } from '@accounts/entities/account.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from '@rooms/entities/question.entity';
@@ -8,7 +9,6 @@ import { SubmitHistoryService } from './submit-history.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([SubmitHistory]),
-    TypeOrmModule.forFeature([Question]),
   ],
   controllers: [SubmitHistoryController],
   providers: [SubmitHistoryService],
