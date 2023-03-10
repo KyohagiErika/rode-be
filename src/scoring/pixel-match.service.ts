@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import pixelmatch from 'pixelmatch';
+import * as pixelmatch from 'pixelmatch';
 import puppeteer from 'puppeteer';
-import Handlebars from 'handlebars';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import { LocalFilesService } from '@local-files/local-files.service';
+import { PNG } from 'pngjs';
+import { FeResultDto } from './dtos/fe-result.dto';
 
 @Injectable()
 export class PixelMatchService {
   constructor(private readonly localFilesService: LocalFilesService) {}
 
-  async score(localFileId: string, htmlTemplate: string, css: string) {
+  async score(localFileId: string, html: string): Promise<[FeResultDto, any]> {
     const [localFile, err] = await this.localFilesService.findOneById(
       localFileId,
     );
@@ -20,70 +21,32 @@ export class PixelMatchService {
     const src = fs.readFileSync(
       resolve(__dirname + '/../../' + localFile.path),
     );
-    const [target, err2] = await this.renderImage(htmlTemplate, css);
+    const [target, err2] = await this.renderImage(html);
     if (err2) {
       return [null, err2];
     }
-    return this.compareImageWithTemplate(src, target);
+    const [match, err3] = this.compareImageWithTemplate(src, target);
+    if (err3) {
+      return [null, err3];
+    }
+    return [{ match: match, coc: html.length }, null];
   }
 
-  async test(css: string, htmlContent: string) {
-    const pathToTemplate = resolve(
-      __dirname + '/../../css-scoring/css-render.hbs',
-    );
-    const cssRender = fs.readFileSync(pathToTemplate);
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      dumpio: true,
-      defaultViewport: {
-        width: 300,
-        height: 300,
-      },
-    });
-    console.log(await browser.version());
-    const page = await browser.newPage();
-    await page.setContent(
-      Handlebars.compile(cssRender.toString())({
-        css: css,
-        htmlContent: htmlContent,
-      }),
-      { waitUntil: 'networkidle0' },
-    );
-    const pngBuff = await page.screenshot({
-      omitBackground: true,
-      type: 'png',
-    });
-    fs.writeFileSync(
-      resolve(__dirname + '/../../css-scoring/test.png'),
-      pngBuff,
-    );
-    await browser.close();
-  }
-
-  async renderImage(htmlContent: string, css: string) {
+  async renderImage(html: string): Promise<[Buffer, any]> {
     try {
-      const pathToTemplate = resolve(
-        __dirname + '/../../css-scoring/css-render.hbs',
-      );
-      const cssRender = fs.readFileSync(pathToTemplate);
+      const viewport = [400, 300];
+
       const browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
         dumpio: true,
         defaultViewport: {
-          width: 300,
-          height: 300,
+          width: viewport[0],
+          height: viewport[1],
         },
       });
       const page = await browser.newPage();
-      await page.setContent(
-        Handlebars.compile(cssRender.toString())({
-          css: css,
-          htmlContent: htmlContent,
-        }),
-        { waitUntil: 'networkidle0' },
-      );
+      await page.setContent(html, { waitUntil: 'networkidle0' });
       const pngBuff = await page.screenshot({
         omitBackground: true,
         type: 'png',
@@ -96,11 +59,70 @@ export class PixelMatchService {
     }
   }
 
-  compareImageWithTemplate(src: Buffer, target: Buffer) {
+  async renderDiffImage(
+    localFileId: string,
+    html: string,
+  ): Promise<[Buffer, any]> {
+    const [localFile, err] = await this.localFilesService.findOneById(
+      localFileId,
+    );
+    if (err) {
+      return [null, err];
+    }
+    const src = fs.readFileSync(
+      resolve(__dirname + '/../../' + localFile.path),
+    );
+    const [target, err2] = await this.renderImage(html);
+    if (err2) {
+      return [null, err2];
+    }
     try {
-      const diff = src;
-      const match = pixelmatch(src, target, diff, 300, 300);
-      return [{ diff: diff, match: match }, null];
+      const srcImg = PNG.sync.read(src);
+      const targetImg = PNG.sync.read(target);
+      const diffImg = new PNG({ width: srcImg.width, height: srcImg.height });
+      if (
+        srcImg.width !== targetImg.width ||
+        srcImg.height !== targetImg.height
+      ) {
+        return [
+          null,
+          `Images are not the same size. Source image size: ${srcImg.width}x${srcImg.height}`,
+        ];
+      }
+      pixelmatch(
+        srcImg.data,
+        targetImg.data,
+        diffImg.data,
+        srcImg.width,
+        srcImg.height,
+        {
+          threshold: 0.1,
+        },
+      );
+      return [PNG.sync.write(diffImg), null];
+    } catch (err) {
+      console.log(err);
+      return [null, err];
+    }
+  }
+
+  compareImageWithTemplate(src: Buffer, target: Buffer): [number, any] {
+    try {
+      const path = resolve(__dirname + '/../../css-scoring');
+      // fs.writeFileSync(`${path}/src.png`, src);
+      // fs.writeFileSync(`${path}/target.png`, target);
+      const srcImg = PNG.sync.read(src);
+      const targetImg = PNG.sync.read(target);
+      const diffImg = new PNG({ width: srcImg.width, height: srcImg.height });
+      const misMatch = pixelmatch(
+        srcImg.data,
+        targetImg.data,
+        diffImg.data,
+        srcImg.width,
+        srcImg.height,
+      );
+      const match = (1 - misMatch / (srcImg.width * srcImg.height)) * 100;
+      return [match, null];
     } catch (err) {
       console.log(err);
       return [null, err];
