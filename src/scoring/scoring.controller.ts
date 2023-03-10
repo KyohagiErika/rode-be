@@ -22,9 +22,7 @@ export class ScoringController {
   constructor(private readonly scoringService: ScoringService) {}
 
   @Post('test-submit')
-  async testSubmit(
-    @Body() body: SubmitDto,
-  ) {
+  async testSubmit(@Body() body: SubmitDto) {
     const [result, err] = await this.scoringService.submit(body);
     if (err) {
       return new ResponseObject(

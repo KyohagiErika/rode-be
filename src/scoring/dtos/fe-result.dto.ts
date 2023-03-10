@@ -1,4 +1,4 @@
 export class FeResultDto {
-    match: number;
-    coc: number;
+  match: number;
+  coc: number;
 }
