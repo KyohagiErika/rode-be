@@ -1,4 +1,4 @@
 export class BeResultDto {
-    testCaseStatistics: boolean[];
-    execTime: number;
+  testCaseStatistics: boolean[];
+  execTime: number;
 }

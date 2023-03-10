@@ -18,7 +18,9 @@ export class ScoringService {
     private readonly pixelMatchService: PixelMatchService,
   ) {}
 
-  async submit(submitDto: SubmitDto): Promise<[BeResultDto | FeResultDto, any]> {
+  async submit(
+    submitDto: SubmitDto,
+  ): Promise<[BeResultDto | FeResultDto, any]> {
     const [room, err] = await this.roomsService.findOneById(submitDto.roomId);
     if (err) {
       return [null, err];
@@ -50,7 +52,10 @@ export class ScoringService {
         }
       }
       case RoomTypeEnum.FE: {
-        const [result, err] = await this.pixelMatchService.score(question.questionImage, submitDto.code);
+        const [result, err] = await this.pixelMatchService.score(
+          question.questionImage,
+          submitDto.code,
+        );
         return [result, err];
       }
       default: {
@@ -77,6 +82,9 @@ export class ScoringService {
     if (room.type != RoomTypeEnum.FE) {
       return [null, 'Room type not supported'];
     }
-    return await this.pixelMatchService.renderDiffImage(question.questionImage, submitDto.code);
+    return await this.pixelMatchService.renderDiffImage(
+      question.questionImage,
+      submitDto.code,
+    );
   }
 }

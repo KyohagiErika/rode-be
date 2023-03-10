@@ -46,10 +46,7 @@ export class PixelMatchService {
         },
       });
       const page = await browser.newPage();
-      await page.setContent(
-        html,
-        { waitUntil: 'networkidle0' },
-      );
+      await page.setContent(html, { waitUntil: 'networkidle0' });
       const pngBuff = await page.screenshot({
         omitBackground: true,
         type: 'png',
@@ -62,7 +59,10 @@ export class PixelMatchService {
     }
   }
 
-  async renderDiffImage(localFileId: string, html: string): Promise<[Buffer, any]> {
+  async renderDiffImage(
+    localFileId: string,
+    html: string,
+  ): Promise<[Buffer, any]> {
     const [localFile, err] = await this.localFilesService.findOneById(
       localFileId,
     );
@@ -80,12 +80,25 @@ export class PixelMatchService {
       const srcImg = PNG.sync.read(src);
       const targetImg = PNG.sync.read(target);
       const diffImg = new PNG({ width: srcImg.width, height: srcImg.height });
-      if (srcImg.width !== targetImg.width || srcImg.height !== targetImg.height) {
-        return [null, `Images are not the same size. Source image size: ${srcImg.width}x${srcImg.height}`];
+      if (
+        srcImg.width !== targetImg.width ||
+        srcImg.height !== targetImg.height
+      ) {
+        return [
+          null,
+          `Images are not the same size. Source image size: ${srcImg.width}x${srcImg.height}`,
+        ];
       }
-      pixelmatch(srcImg.data, targetImg.data, diffImg.data, srcImg.width, srcImg.height, {
-        threshold: 0.1,
-      });
+      pixelmatch(
+        srcImg.data,
+        targetImg.data,
+        diffImg.data,
+        srcImg.width,
+        srcImg.height,
+        {
+          threshold: 0.1,
+        },
+      );
       return [PNG.sync.write(diffImg), null];
     } catch (err) {
       console.log(err);
@@ -101,8 +114,14 @@ export class PixelMatchService {
       const srcImg = PNG.sync.read(src);
       const targetImg = PNG.sync.read(target);
       const diffImg = new PNG({ width: srcImg.width, height: srcImg.height });
-      const misMatch = pixelmatch(srcImg.data, targetImg.data, diffImg.data, srcImg.width, srcImg.height);
-      const match = (1 - ((misMatch) / (srcImg.width * srcImg.height))) * 100;
+      const misMatch = pixelmatch(
+        srcImg.data,
+        targetImg.data,
+        diffImg.data,
+        srcImg.width,
+        srcImg.height,
+      );
+      const match = (1 - misMatch / (srcImg.width * srcImg.height)) * 100;
       return [match, null];
     } catch (err) {
       console.log(err);
