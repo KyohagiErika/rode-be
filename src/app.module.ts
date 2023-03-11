@@ -9,6 +9,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { LocalFilesModule } from './local-files/local-files.module';
 import { ScoringModule } from './scoring/scoring.module';
 import { UserRoomsModule } from './user-rooms/user-rooms.module';
+import { LogModule } from './logger/logger.module';
 import LoggerMiddleware from './etc/logger.middleware';
 
 @Module({
@@ -21,6 +22,7 @@ import LoggerMiddleware from './etc/logger.middleware';
     LocalFilesModule,
     ScoringModule,
     UserRoomsModule,
+    LogModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

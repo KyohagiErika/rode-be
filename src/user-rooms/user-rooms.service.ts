@@ -5,10 +5,13 @@ import { RoleEnum } from '@etc/enums';
 import { Room } from '@rooms/entities/room.entity';
 import { Repository } from 'typeorm';
 import { UserRoom } from './entities/user-room.entity';
+import { Log, prefixesForLoggers } from '@logger/logger.decorator';
+import { LogService } from '@logger/logger.service';
 
 @Injectable()
 export class UserRoomsService {
   constructor(
+    @Log('UserRoomsService') private readonly logger: LogService,
     @InjectRepository(UserRoom)
     private readonly userRoomsRepository: Repository<UserRoom>,
   ) {}

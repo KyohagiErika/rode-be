@@ -61,9 +61,9 @@ export class UserRoomsController {
   }
 
   @Get('users/room/:roomId')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(RoleEnum.ADMIN)
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard, RoleGuard)
+  // @Roles(RoleEnum.ADMIN)
   async findAllUsersInRoom(@Param('roomId') roomId: string) {
     const isExisted = await this.roomsService.isExisted(roomId);
     if (!isExisted) {
