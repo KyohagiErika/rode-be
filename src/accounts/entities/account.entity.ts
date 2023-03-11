@@ -1,6 +1,7 @@
 import { RoleEnum } from '../../etc/enums';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRoom } from '../../user-rooms/entities/user-room.entity';
+import { SubmitHistory } from '../../submit-history/entities/submit-history.entity';
 
 @Entity()
 export class Account {
@@ -33,4 +34,7 @@ export class Account {
 
   @OneToMany(() => UserRoom, (userRooms) => userRooms.account)
   userRooms: UserRoom[];
+
+  @OneToMany(() => SubmitHistory, (submitHistory) => submitHistory.account)
+  submitHistory: SubmitHistory[];
 }

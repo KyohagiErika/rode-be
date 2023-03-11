@@ -10,6 +10,7 @@ import { LocalFilesModule } from './local-files/local-files.module';
 import { ScoringModule } from './scoring/scoring.module';
 import { UserRoomsModule } from './user-rooms/user-rooms.module';
 import LoggerMiddleware from './etc/logger.middleware';
+import { SubmitHistoryModule } from 'submit-history/submit-history.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import LoggerMiddleware from './etc/logger.middleware';
     LocalFilesModule,
     ScoringModule,
     UserRoomsModule,
+    SubmitHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
