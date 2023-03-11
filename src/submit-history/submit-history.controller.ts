@@ -9,11 +9,11 @@ import { SubmitHistoryService } from './submit-history.service';
 @ApiTags('SubmitHistory')
 @ApiBearerAuth()
 export class SubmitHistoryController {
-  constructor(private readonly submiHistoryService: SubmitHistoryService) {}
+  constructor(private readonly submitHistoryService: SubmitHistoryService) {}
 
   @Get('get-by-question/:question')
   async getByQuestion(@Param('question') question: string) {
-    const [submitHistory, err] = await this.submiHistoryService.getByQuestion(
+    const [submitHistory, err] = await this.submitHistoryService.getByQuestion(
       question,
     );
     if (!question || !submitHistory) {
@@ -27,7 +27,7 @@ export class SubmitHistoryController {
 
     return new ResponseObject(
       HttpStatus.OK,
-      'Get leader board successfull!',
+      'Get leader board successfully!',
       submitHistory,
       null,
     );
