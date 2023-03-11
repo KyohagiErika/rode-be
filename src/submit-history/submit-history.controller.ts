@@ -18,14 +18,14 @@ import { CreateSubmitDto } from './dtos/create-submit-history.dto';
 @ApiTags('SubmitHistory')
 @ApiBearerAuth()
 export class SubmitHistoryController {
-  constructor(private readonly submiHistoryService: SubmitHistoryService) {}
+  constructor(private readonly submitHistoryService: SubmitHistoryService) {}
 
   @Get('get-by-question/:question')
   async getByQuestion(@Param('question') question: string) {
-    const [submitHistory, err] = await this.submiHistoryService.getByQuestion(
+    const [submitHistory, err] = await this.submitHistoryService.getByQuestion(
       question,
     );
-    if (!question) {
+    if (!question || !submitHistory) {
       return new ResponseObject(
         HttpStatus.BAD_REQUEST,
         'Get leader board failed!',
@@ -36,7 +36,7 @@ export class SubmitHistoryController {
 
     return new ResponseObject(
       HttpStatus.OK,
-      'Get all leader board success!',
+      'Get leader board successfully!',
       submitHistory,
       null,
     );
@@ -44,7 +44,7 @@ export class SubmitHistoryController {
 
   @Get('get-by-room/:roomId')
   async getByRoom(@Param('roomId') roomId: string) {
-    const [submits, err] = await this.submiHistoryService.getByRoom(roomId);
+    const [submits, err] = await this.submitHistoryService.getByRoom(roomId);
     return new ResponseObject(
       HttpStatus.OK,
       'Get all leader board success!',
@@ -55,7 +55,7 @@ export class SubmitHistoryController {
 
   @Post('create-submit')
   async createSubmit(@Body() createSubmit: CreateSubmitDto) {
-    const [submit, err] = await this.submiHistoryService.createSubmit(
+    const [submit, err] = await this.submitHistoryService.createSubmit(
       createSubmit,
     );
     return new ResponseObject(
