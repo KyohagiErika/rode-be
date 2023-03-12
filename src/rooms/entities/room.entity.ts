@@ -17,7 +17,7 @@ export class Room {
   @Column({ nullable: true })
   closeTime: Date;
 
-  @Column({ nullable:true })
+  @Column({ nullable: true })
   duration: number;
 
   @Column({ type: 'enum', enum: RoomTypeEnum })
