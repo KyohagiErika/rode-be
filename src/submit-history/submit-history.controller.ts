@@ -45,17 +45,13 @@ export class SubmitHistoryController {
   @Get('get-by-room/:roomId')
   async getByRoom(@Param('roomId') roomId: string) {
     const [submits, err] = await this.submitHistoryService.getByRoom(roomId);
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Get all leader board success!',
-      submits,
-      null,
-    );
-  }
-
-  @Get('get-by-room-v2/:roomId')
-  async getByRoomv2(@Param('roomId') roomId: string) {
-    const [submits, err] = await this.submitHistoryService.getByRoomv2(roomId);
+    if (!submits)
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Room not exist!',
+        null,
+        err,
+      );
     return new ResponseObject(
       HttpStatus.OK,
       'Get all leader board success!',

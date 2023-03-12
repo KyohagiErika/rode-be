@@ -113,26 +113,6 @@ export class SubmitHistoryService {
     return [submits, null];
   }
 
-  async getByRoomv2(roomId: string) {
-    const room = await this.roomRepository.findOne({
-      where: {
-        id: roomId,
-      },
-    });
-    if (!room) return [null, 'Room not exist'];
-    const submits = await this.submitHistoryRepository
-      .createQueryBuilder('submitHistory')
-      .innerJoinAndSelect('submitHistory.account', 'account')
-      .innerJoin('submitHistory.question', 'question')
-      .innerJoin('question.room', 'room')
-      .addSelect('MAX(submitHistory.submittedAt)', 'submittedAttt')
-      .where('question.room = :roomId', { roomId: roomId })
-      .groupBy('submitHistory.account.id')
-      .addGroupBy('submitHistory.question.id')
-      .getMany();
-    return [submits, null];
-  }
-
   async createSubmit(submitDto: CreateSubmitDto) {
     const account = await this.accountRepository.findOne({
       where: {
