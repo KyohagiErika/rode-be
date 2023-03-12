@@ -14,23 +14,22 @@ export class LogService extends Logger {
       formattedMessage = `[${this.prefix}] ${message}`;
     }
     super.log(formattedMessage);
-    //console.log(formattedMessage);
   }
 
-  error(message: string) {
+  error(message: string, context?: string) {
     let formattedMessage = message;
     if (this.prefix) {
       formattedMessage = `[${this.prefix}] ${message}`;
     }
-    console.log(formattedMessage);
+    super.error(formattedMessage);
   }
 
-  warn(message: string) {
+  warn(message: string, context?: string) {
     let formattedMessage = message;
     if (this.prefix) {
       formattedMessage = `[${this.prefix}] ${message}`;
     }
-    console.log(formattedMessage);
+    super.warn(formattedMessage);
   }
 
   setPrefix(prefix: string) {
