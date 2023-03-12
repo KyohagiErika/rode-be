@@ -66,57 +66,71 @@ export class SubmitHistoryService {
       },
     });
     if (!room) return [null, 'Room not exist'];
+    const query = this.submitHistoryRepository
+      .createQueryBuilder('submitHistory')
+      .select([
+        'submitHistory.id',
+        'submitHistory.language',
+        'submitHistory.submittedAt',
+      ])
+      .addSelect('SUM(submitHistory.score)', 'totalScore')
+      .addSelect('SUM(submitHistory.time)', 'totalTime')
+      .addSelect('SUM(submitHistory.space)', 'totalSpace')
+      .innerJoinAndSelect(
+        (subQuery) => {
+          return subQuery
+            .addSelect('lastSubmit.account', 'account')
+            .addSelect('lastSubmit.question', 'question')
+            .addSelect('MAX(lastSubmit.submittedAt)', 'submittedAt')
+            .from(SubmitHistory, 'lastSubmit')
+            .innerJoin('lastSubmit.question', 'question')
+            .innerJoin('question.room', 'room')
+            .where('room.id = :roomId', { roomId: roomId })
+            .groupBy('lastSubmit.account.id')
+            .addGroupBy('lastSubmit.question.id');
+        },
+        'lastSubmits',
+        'lastSubmits.account = submitHistory.account AND lastSubmits.question = submitHistory.question AND lastSubmits.submittedAt = submitHistory.submittedAt',
+      )
+      .innerJoinAndSelect('submitHistory.account', 'account')
+      .where('account.isActive = true')
+      .groupBy('submitHistory.account.id')
+      .orderBy({
+        totalscore: 'DESC',
+        totalTime: 'ASC',
+        totalSpace: 'ASC',
+      });
+    const getMany: any = await query.getMany();
+    const getRawMany = await query.getRawMany();
+    let i = 0;
+    const submits = getMany.map((item) => {
+      item.totalScore = getRawMany[i].totalScore;
+      item.totalTime = getRawMany[i].totalTime;
+      item.totalSpace = getRawMany[i].totalSpace;
+      i++;
+      return item;
+    });
+    return [submits, null];
+  }
+
+  async getByRoomv2(roomId: string) {
+    const room = await this.roomRepository.findOne({
+      where: {
+        id: roomId,
+      },
+    });
+    if (!room) return [null, 'Room not exist'];
     const submits = await this.submitHistoryRepository
       .createQueryBuilder('submitHistory')
-      .leftJoinAndSelect('submitHistory.account', 'account')
-      .leftJoin('submitHistory.question', 'question')
+      .innerJoinAndSelect('submitHistory.account', 'account')
+      .innerJoin('submitHistory.question', 'question')
+      .innerJoin('question.room', 'room')
+      .addSelect('MAX(submitHistory.submittedAt)', 'submittedAttt')
+      .where('question.room = :roomId', { roomId: roomId })
       .groupBy('submitHistory.account.id')
       .addGroupBy('submitHistory.question.id')
-      .orderBy('submitHistory.account.id')
-      .addOrderBy('submitHistory.submittedAt', 'DESC')
       .getMany();
-    if (!submits.length) return [submits, null];
-    const leaderboard = [];
-    let totalScore = submits[0].score;
-    let totalTime = submits[0].time;
-    let totalSpace = submits[0].space;
-    let submittedAt = submits[0].submittedAt;
-    for (let i = 1; i < submits.length; i++) {
-      if (submits[i].account.id == submits[i - 1].account.id) {
-        totalScore += submits[i].score;
-        totalTime += submits[i].time;
-        totalSpace += submits[i].space;
-      } else {
-        leaderboard.push({
-          account: submits[i - 1].account,
-          score: totalScore,
-          time: totalTime,
-          space: totalSpace,
-          submittedAt: submittedAt,
-        });
-        totalScore = submits[i].score;
-        totalTime = submits[i].time;
-        totalSpace = submits[i].space;
-        submittedAt = submits[i].submittedAt;
-      }
-    }
-    leaderboard.push({
-      account: submits[submits.length - 1].account,
-      score: totalScore,
-      time: totalTime,
-      space: totalSpace,
-      submittedAt: submittedAt,
-    });
-    leaderboard.sort((a, b) => {
-      if (a.score == b.score) {
-        if (a.time == b.time) {
-          return a.space - b.space;
-        }
-        return a.time - b.time;
-      }
-      return a.score - b.score;
-    });
-    return [leaderboard, null];
+    return [submits, null];
   }
 
   async createSubmit(submitDto: CreateSubmitDto) {

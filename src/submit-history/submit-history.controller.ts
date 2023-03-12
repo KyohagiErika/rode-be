@@ -53,6 +53,17 @@ export class SubmitHistoryController {
     );
   }
 
+  @Get('get-by-room-v2/:roomId')
+  async getByRoomv2(@Param('roomId') roomId: string) {
+    const [submits, err] = await this.submitHistoryService.getByRoomv2(roomId);
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all leader board success!',
+      submits,
+      null,
+    );
+  }
+
   @Post('create-submit')
   async createSubmit(@Body() createSubmit: CreateSubmitDto) {
     const [submit, err] = await this.submitHistoryService.createSubmit(
