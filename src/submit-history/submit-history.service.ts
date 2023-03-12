@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 import { Room } from '@rooms/entities/room.entity';
-import { CreateSubmitDto } from './dtos/create-submit-history.dto';
 import { Question } from '@rooms/entities/question.entity';
 
 @Injectable()
@@ -111,30 +110,5 @@ export class SubmitHistoryService {
       return item;
     });
     return [submits, null];
-  }
-
-  async createSubmit(submitDto: CreateSubmitDto) {
-    const account = await this.accountRepository.findOne({
-      where: {
-        id: submitDto.accountId,
-      },
-    });
-    if (!account) return [null, 'Account not found!'];
-    const question = await this.questionRepository.findOne({
-      where: {
-        id: submitDto.questionId,
-      },
-    });
-    if (!question) return [null, 'Question not found!'];
-    const submit = await this.submitHistoryRepository.save({
-      score: submitDto.score,
-      submissions: submitDto.submissions,
-      submittedAt: submitDto.submittedAt,
-      time: submitDto.time,
-      space: submitDto.space,
-      account: account,
-      question: question,
-    });
-    return [submit, null];
   }
 }

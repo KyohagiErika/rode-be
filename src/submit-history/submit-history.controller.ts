@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
-import { CreateSubmitDto } from './dtos/create-submit-history.dto';
 
 @Controller('submit-history')
 @UseGuards(JwtAuthGuard)
@@ -56,19 +55,6 @@ export class SubmitHistoryController {
       HttpStatus.OK,
       'Get all leader board success!',
       submits,
-      null,
-    );
-  }
-
-  @Post('create-submit')
-  async createSubmit(@Body() createSubmit: CreateSubmitDto) {
-    const [submit, err] = await this.submitHistoryService.createSubmit(
-      createSubmit,
-    );
-    return new ResponseObject(
-      HttpStatus.OK,
-      'Create submit success!',
-      submit,
       null,
     );
   }
