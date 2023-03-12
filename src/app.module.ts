@@ -11,6 +11,7 @@ import { ScoringModule } from './scoring/scoring.module';
 import { UserRoomsModule } from './user-rooms/user-rooms.module';
 import { LogModule } from './logger/logger.module';
 import LoggerMiddleware from './etc/logger.middleware';
+import { SubmitHistoryModule } from 'submit-history/submit-history.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import LoggerMiddleware from './etc/logger.middleware';
     ScoringModule,
     UserRoomsModule,
     LogModule.forRoot(),
+    SubmitHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

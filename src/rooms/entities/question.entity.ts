@@ -1,3 +1,4 @@
+import { SubmitHistory } from '../../submit-history/entities/submit-history.entity';
 import {
   Column,
   Entity,
@@ -16,14 +17,14 @@ export class Question {
   @Column()
   questionImage: string;
 
-  @Column()
+  @Column({ nullable: true })
   maxSubmitTimes: number;
 
   @Column({ nullable: true })
   colors: string;
 
   @Column({ nullable: true, length: 3000 })
-  htmlTemplate: string;
+  codeTemplate: string;
 
   @ManyToOne(() => Room, { onDelete: 'CASCADE' })
   room: Room;
@@ -34,4 +35,7 @@ export class Question {
     { cascade: true },
   )
   testCases: QuestionTestCase[];
+
+  @OneToMany(() => SubmitHistory, (submitHistory) => submitHistory.question)
+  submitHistory: SubmitHistory[];
 }

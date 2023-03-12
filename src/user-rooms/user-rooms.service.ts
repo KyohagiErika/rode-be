@@ -17,11 +17,28 @@ export class UserRoomsService {
   ) {}
 
   async join(room: Room, account: Account) {
-    const userRoom = await this.userRoomsRepository.save({
-      account,
-      room,
+    if (room.openTime < new Date() && room.closeTime > new Date()) {
+      const userRoom = await this.userRoomsRepository.save({
+        account,
+        room,
+      });
+      return [userRoom, null];
+    } else return [null, 'Room is not opened!'];
+  }
+
+  async isJoined(roomId: string, accountId: string) {
+    const userRoom = await this.userRoomsRepository.findOne({
+      where: {
+        room: {
+          id: roomId,
+        },
+        account: {
+          id: accountId,
+          role: RoleEnum.USER,
+        },
+      },
     });
-    return [userRoom, null];
+    return userRoom ? true : false;
   }
 
   async findAllUsersInRoom(roomId: string) {
@@ -67,10 +84,15 @@ export class UserRoomsService {
         room: true,
       },
       select: {
-        room: {},
+        room: {
+          id: true,
+          openTime: true,
+          closeTime: true,
+          duration: true,
+          type: true,
+        },
         joinTime: true,
         finishTime: true,
-        attendance: true,
       },
     });
     return users;
