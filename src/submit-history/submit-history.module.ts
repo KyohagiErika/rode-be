@@ -8,12 +8,7 @@ import { SubmitHistoryService } from './submit-history.service';
 import { Room } from '@rooms/entities/room.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([SubmitHistory]),
-    TypeOrmModule.forFeature([Question]),
-    TypeOrmModule.forFeature([Room]),
-    TypeOrmModule.forFeature([Account]),
-  ],
+  imports: [TypeOrmModule.forFeature([SubmitHistory, Question, Room, Account])],
   controllers: [SubmitHistoryController],
   providers: [SubmitHistoryService],
   exports: [SubmitHistoryService],
