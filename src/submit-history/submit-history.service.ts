@@ -100,15 +100,6 @@ export class SubmitHistoryService {
         totalSpace: 'ASC',
       });
     const getMany: any = await query.getMany();
-    const getRawMany = await query.getRawMany();
-    let i = 0;
-    const submits = getMany.map((item) => {
-      item.totalScore = getRawMany[i].totalScore;
-      item.totalTime = getRawMany[i].totalTime;
-      item.totalSpace = getRawMany[i].totalSpace;
-      i++;
-      return item;
-    });
-    return [submits, null];
+    return [getMany, null];
   }
 }
