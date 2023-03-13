@@ -109,4 +109,10 @@ export class SubmitHistoryService {
     });
     return [submits, null];
   }
+  async createSubmit(submission: SubmitHistory) {
+    //Handle number of submission here
+
+    const submit = await this.submitHistoryRepository.save(submission);
+    return [submit, null];
+  }
 }
