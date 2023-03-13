@@ -5,6 +5,7 @@ import {
   Param,
   UseGuards,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
 import { UserRoomsService } from './user-rooms.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -16,6 +17,8 @@ import { Account } from '@accounts/entities/account.entity';
 import CurrentAccount from '@decorators/current-account.decorator';
 import { RoomsService } from '@rooms/rooms.service';
 import ResponseObject from '@etc/response-object';
+import { CheckAttendanceDto } from './dtos/check-attendance.dto';
+import { UserRoom } from './entities/user-room.entity';
 
 @Controller('user-rooms')
 @ApiTags('UserRooms')
@@ -98,4 +101,32 @@ export class UserRoomsController {
   async findAllRoomsOfUser(@CurrentAccount() curAccount: Account) {
     return this.userRoomsService.findAllRoomsOfUser(curAccount.id);
   }
+
+  @Post('check-attendance/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async checkAttendance(@Body() info: CheckAttendanceDto) {
+    let results = [];
+    for( var i=0; i<info.id.length; i++){
+      const [check, err] = await this.userRoomsService.checkAttendance(info.id[i]);
+      results.push([check, err] )
+    }
+    if (!results) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Check Attendance failed!',
+        null,
+        results,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Check Attendance success!',
+      results,
+      null,
+    );
+  
+    }
+    
 }

@@ -72,4 +72,18 @@ export class UserRoomsService {
     });
     return users;
   }
+
+  async checkAttendance(id: string) {
+    const userRoom = await this.userRoomsRepository.findOne({
+      where: {
+        id: id
+      },
+    });
+    if (!userRoom) {
+      return [null, 'Account not found'];
+    }
+    userRoom.attendance = !userRoom.attendance;
+    await this.userRoomsRepository.save(userRoom);
+    return [userRoom, null];
+  }
 }
