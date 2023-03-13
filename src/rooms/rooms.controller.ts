@@ -9,6 +9,7 @@ import Roles from '../decorators/roles.decorator';
 import { RoleEnum } from '../etc/enums';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { RoomsService } from './rooms.service';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 
 @Controller('rooms')
 @UseGuards(JwtAuthGuard)
@@ -110,5 +111,27 @@ export class RoomsController {
       );
     }
     return new ResponseObject(HttpStatus.OK, 'Get room success!', room, null);
+  }
+
+  @Post('update-one-by-id/:id')
+  @ApiParam({ name: 'id', description: 'Room ID' })
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async updateOneById(@Param('id') id: string, @Body() info: UpdateRoomDto) {
+    const [room, err] = await this.roomsService.updateOne(id, info);
+    if (!room) {
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Update room failed!',
+        null,
+        err,
+      );
+    }
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Update room success!',
+      room,
+      null,
+    );
   }
 }
