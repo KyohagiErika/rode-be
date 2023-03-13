@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
   Body,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
@@ -67,21 +68,21 @@ export class SubmitHistoryController {
   @ApiQuery({ name: 'userId', required: true })
   @ApiQuery({ name: 'roomId', required: false })
   @ApiQuery({ name: 'questionId', required: false })
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.USER)
-  async showUserHistoryByRoom(
-    @Param('userId') userId: string,
-    @Param('roomId') roomId: string,
-    @Param('questionId') questionId: string,
+  async showUserHistory(
+    @Query('userId') userId: string,
+    @Query('roomId') roomId: string,
+    @Query('questionId') questionId: string,
   ) {
     let submits: string | SubmitHistory[];
     let err;
     if (roomId) {
+      console.log('run 1');
       [submits, err] = await this.submitHistoryService.showUserHistoryByRoom(
         userId,
         roomId,
       );
     } else {
+      console.log('run 2');
       [submits, err] =
         await this.submitHistoryService.showUserHistoryByQuestion(
           userId,
@@ -108,9 +109,9 @@ export class SubmitHistoryController {
   @ApiQuery({ name: 'questionId', required: false })
   @UseGuards(RoleGuard)
   @Roles(RoleEnum.ADMIN)
-  async showAllSubmitsByRoom(
-    @Param('roomId') roomId: string,
-    @Param('questionId') questionId: string,
+  async showAllSubmits(
+    @Query('roomId') roomId: string,
+    @Query('questionId') questionId: string,
   ) {
     let submits: string | SubmitHistory[];
     let err;

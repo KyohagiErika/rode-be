@@ -254,7 +254,7 @@ export class SubmitHistoryService {
   }
 
   async showAllSubmitsByQuestion(questionId: string) {
-    const question = await this.roomRepository.findOne({
+    const question = await this.questionRepository.findOne({
       where: {
         id: questionId,
       },
