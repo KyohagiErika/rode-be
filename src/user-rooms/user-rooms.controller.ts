@@ -152,11 +152,13 @@ export class UserRoomsController {
 
   @Post('check-attendance/:id')
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Check Attendance for Users' })
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(RoleEnum.ADMIN)
   async checkAttendance(@Body() info: CheckAttendanceDto) {
     let results = [];
     for (var i = 0; i < info.id.length; i++) {
+      this.logger.log(`Checking attendance for user ${info.id[i]}`);
       const [check, err] = await this.userRoomsService.checkAttendance(
         info.id[i],
       );
@@ -170,6 +172,7 @@ export class UserRoomsController {
         results,
       );
     }
+    this.logger.log('Check attendance success!');
     return new ResponseObject(
       HttpStatus.OK,
       'Check Attendance success!',
