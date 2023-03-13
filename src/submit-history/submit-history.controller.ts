@@ -9,8 +9,12 @@ import {
   UseGuards,
   Body,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SubmitHistoryService } from './submit-history.service';
+import { RoleGuard } from '@auth/role.guard';
+import Roles from '@decorators/roles.decorator';
+import { RoleEnum } from '@etc/enums';
+import { SubmitHistory } from './entities/submit-history.entity';
 
 @Controller('submit-history')
 @UseGuards(JwtAuthGuard)
@@ -54,6 +58,81 @@ export class SubmitHistoryController {
     return new ResponseObject(
       HttpStatus.OK,
       'Get all leader board success!',
+      submits,
+      null,
+    );
+  }
+
+  @Get('get-user-history')
+  @ApiQuery({ name: 'userId', required: true })
+  @ApiQuery({ name: 'roomId', required: false })
+  @ApiQuery({ name: 'questionId', required: false })
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.USER)
+  async showUserHistoryByRoom(
+    @Param('userId') userId: string,
+    @Param('roomId') roomId: string,
+    @Param('questionId') questionId: string,
+  ) {
+    let submits: string | SubmitHistory[];
+    let err;
+    if (roomId) {
+      [submits, err] = await this.submitHistoryService.showUserHistoryByRoom(
+        userId,
+        roomId,
+      );
+    } else {
+      [submits, err] =
+        await this.submitHistoryService.showUserHistoryByQuestion(
+          userId,
+          questionId,
+        );
+    }
+    if (!submits)
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get submits failed',
+        null,
+        err,
+      );
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all submits success!',
+      submits,
+      null,
+    );
+  }
+
+  @Get('get-users-history')
+  @ApiQuery({ name: 'roomId', required: false })
+  @ApiQuery({ name: 'questionId', required: false })
+  @UseGuards(RoleGuard)
+  @Roles(RoleEnum.ADMIN)
+  async showAllSubmitsByRoom(
+    @Param('roomId') roomId: string,
+    @Param('questionId') questionId: string,
+  ) {
+    let submits: string | SubmitHistory[];
+    let err;
+    if (roomId) {
+      [submits, err] = await this.submitHistoryService.showAllSubmitsByRoom(
+        roomId,
+      );
+    } else {
+      [submits, err] = await this.submitHistoryService.showAllSubmitsByQuestion(
+        questionId,
+      );
+    }
+    if (!submits)
+      return new ResponseObject(
+        HttpStatus.BAD_REQUEST,
+        'Get submits failed',
+        null,
+        err,
+      );
+    return new ResponseObject(
+      HttpStatus.OK,
+      'Get all submits success!',
       submits,
       null,
     );

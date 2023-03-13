@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 import { Room } from '@rooms/entities/room.entity';
+import { Account } from '@accounts/entities/account.entity';
+import { Question } from '@rooms/entities/question.entity';
 
 @Injectable()
 export class SubmitHistoryService {
@@ -12,6 +14,12 @@ export class SubmitHistoryService {
 
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
+
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
   ) {}
 
   async getByQuestion(question: string) {
@@ -114,5 +122,171 @@ export class SubmitHistoryService {
 
     const submit = await this.submitHistoryRepository.save(submission);
     return [submit, null];
+  }
+
+  async showUserHistoryByRoom(userId: string, roomId: string) {
+    const room = await this.roomRepository.findOne({
+      where: {
+        id: roomId,
+      },
+    });
+    if (!room) return [null, 'Room not exist'];
+    const user = await this.accountRepository.findOne({
+      where: {
+        id: userId,
+        isActive: true,
+      },
+    });
+    if (!user) return [null, 'User not exist'];
+    const submits = await this.submitHistoryRepository.find({
+      relations: {
+        account: true,
+        question: true,
+      },
+      where: {
+        account: { id: userId },
+        question: { room: { id: roomId } },
+      },
+      select: {
+        account: {
+          id: true,
+          fname: true,
+          lname: true,
+          email: true,
+          studentId: true,
+        },
+        id: true,
+        score: true,
+        time: true,
+        space: true,
+        submittedAt: true,
+        language: true,
+        question: { id: true },
+      },
+      order: {
+        submittedAt: 'DESC',
+      },
+    });
+    return [submits, null];
+  }
+
+  async showUserHistoryByQuestion(userId: string, questionId: string) {
+    const user = await this.accountRepository.findOne({
+      where: {
+        id: userId,
+        isActive: true,
+      },
+    });
+    if (!user) return [null, 'User not exist'];
+    const question = await this.questionRepository.findOne({
+      where: {
+        id: questionId,
+      },
+    });
+    if (!question) return [null, 'Question not exist'];
+    const submits = await this.submitHistoryRepository.find({
+      relations: {
+        account: true,
+        question: true,
+      },
+      where: {
+        account: { id: userId },
+        question: { id: questionId },
+      },
+      select: {
+        account: {
+          id: true,
+          fname: true,
+          lname: true,
+          email: true,
+          studentId: true,
+        },
+        id: true,
+        score: true,
+        time: true,
+        space: true,
+        submittedAt: true,
+        language: true,
+      },
+      order: {
+        submittedAt: 'DESC',
+      },
+    });
+    return [submits, null];
+  }
+
+  async showAllSubmitsByRoom(roomId: string) {
+    const room = await this.roomRepository.findOne({
+      where: {
+        id: roomId,
+      },
+    });
+    if (!room) return [null, 'Room not exist'];
+    const submits = await this.submitHistoryRepository.find({
+      relations: {
+        account: true,
+        question: true,
+      },
+      where: {
+        question: { room: { id: roomId } },
+      },
+      select: {
+        account: {
+          id: true,
+          fname: true,
+          lname: true,
+          email: true,
+          studentId: true,
+        },
+        id: true,
+        score: true,
+        time: true,
+        space: true,
+        submittedAt: true,
+        language: true,
+        question: { id: true },
+      },
+      order: {
+        submittedAt: 'DESC',
+      },
+    });
+    return [submits, null];
+  }
+
+  async showAllSubmitsByQuestion(questionId: string) {
+    const question = await this.roomRepository.findOne({
+      where: {
+        id: questionId,
+      },
+    });
+    if (!question) return [null, 'Question not exist'];
+    const submits = await this.submitHistoryRepository.find({
+      relations: {
+        account: true,
+        question: true,
+      },
+      where: {
+        question: { id: questionId },
+      },
+      select: {
+        account: {
+          id: true,
+          fname: true,
+          lname: true,
+          email: true,
+          studentId: true,
+        },
+        id: true,
+        score: true,
+        time: true,
+        space: true,
+        submittedAt: true,
+        language: true,
+      },
+      order: {
+        submittedAt: 'DESC',
+      },
+    });
+    return [submits, null];
   }
 }
