@@ -76,7 +76,7 @@ export class UserRoomsService {
   async checkAttendance(id: string) {
     const userRoom = await this.userRoomsRepository.findOne({
       where: {
-        id: id
+        id: id,
       },
     });
     if (!userRoom) {

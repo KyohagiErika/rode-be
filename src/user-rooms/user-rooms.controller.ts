@@ -108,9 +108,11 @@ export class UserRoomsController {
   @Roles(RoleEnum.ADMIN)
   async checkAttendance(@Body() info: CheckAttendanceDto) {
     let results = [];
-    for( var i=0; i<info.id.length; i++){
-      const [check, err] = await this.userRoomsService.checkAttendance(info.id[i]);
-      results.push([check, err] )
+    for (var i = 0; i < info.id.length; i++) {
+      const [check, err] = await this.userRoomsService.checkAttendance(
+        info.id[i],
+      );
+      results.push([check, err]);
     }
     if (!results) {
       return new ResponseObject(
@@ -126,7 +128,5 @@ export class UserRoomsController {
       results,
       null,
     );
-  
-    }
-    
+  }
 }
