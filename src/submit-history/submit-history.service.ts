@@ -1,10 +1,8 @@
-import { Account } from '@accounts/entities/account.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubmitHistory } from './entities/submit-history.entity';
 import { Room } from '@rooms/entities/room.entity';
-import { Question } from '@rooms/entities/question.entity';
 
 @Injectable()
 export class SubmitHistoryService {
@@ -12,14 +10,8 @@ export class SubmitHistoryService {
     @InjectRepository(SubmitHistory)
     private readonly submitHistoryRepository: Repository<SubmitHistory>,
 
-    @InjectRepository(Question)
-    private readonly questionRepository: Repository<Question>,
-
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
-
-    @InjectRepository(Account)
-    private readonly accountRepository: Repository<Account>,
   ) {}
 
   async getByQuestion(question: string) {
@@ -67,11 +59,7 @@ export class SubmitHistoryService {
     if (!room) return [null, 'Room not exist'];
     const query = this.submitHistoryRepository
       .createQueryBuilder('submitHistory')
-      .select([
-        'submitHistory.id',
-        'submitHistory.language',
-        'submitHistory.submittedAt',
-      ])
+      .select('submitHistory.id')
       .addSelect('SUM(submitHistory.score)', 'totalScore')
       .addSelect('SUM(submitHistory.time)', 'totalTime')
       .addSelect('SUM(submitHistory.space)', 'totalSpace')
@@ -92,7 +80,10 @@ export class SubmitHistoryService {
         'lastSubmits.account = submitHistory.account AND lastSubmits.question = submitHistory.question AND lastSubmits.submittedAt = submitHistory.submittedAt',
       )
       .innerJoinAndSelect('submitHistory.account', 'account')
-      .where('account.isActive = true')
+      .innerJoin('account.userRooms', 'userRoom')
+      .where('userRoom.room = :roomId', { roomId: roomId })
+      .addSelect('userRoom.finishTime', 'finishTime')
+      .andWhere('account.isActive = true')
       .groupBy('submitHistory.account.id')
       .orderBy({
         totalscore: 'DESC',
@@ -100,6 +91,22 @@ export class SubmitHistoryService {
         totalSpace: 'ASC',
       });
     const getMany: any = await query.getMany();
-    return [getMany, null];
+    const getRawMany = await query.getRawMany();
+    let i = 0;
+    const submits = getMany.map((item) => {
+      delete item.id;
+      delete item.account.phone;
+      delete item.account.dob;
+      delete item.account.role;
+      delete item.account.isActive;
+      delete item.account.userRooms;
+      item.totalScore = getRawMany[i].totalScore;
+      item.totalTime = getRawMany[i].totalTime;
+      item.totalSpace = getRawMany[i].totalSpace;
+      item.finishTime = getRawMany[i].finishTime;
+      i++;
+      return item;
+    });
+    return [submits, null];
   }
 }
